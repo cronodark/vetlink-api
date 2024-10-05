@@ -13,16 +13,18 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->na
 Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-});
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {});
 
 Route::get('/admin/dashboard', function () {
-    return "atmin";
+    return response()->json("atmin");
 })->middleware(['auth:sanctum', 'role:admin']);
 
-Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
+Route::get('/admin/dashboard', function () {
+    return response()->json("veteriner");
+})->middleware(['auth:sanctum', 'role:veteriner']);
+
+Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
     Route::get('/user/profile', function (Request $request) {
-        return $request->user();
+        return response()->json("veteriner");
     });
 });
-
