@@ -16,4 +16,12 @@ class Queue extends Model
         'id_veteriner',
         'veterinarian_id',
     ];
+
+    public function customer(){
+        $this->belongsTo(User::class, 'id_customer');
+    }
+
+    public function veteriner(){
+        $this->belongsTo(Veteriner::class, 'id_verteriner');
+    }
 }

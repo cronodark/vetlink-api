@@ -16,4 +16,8 @@ class ForumPost extends Model
         'pet_image',
         'id_user',
     ];
+
+    public function user(){
+        $this->belongsTo(User::class, 'id_user');
+    }
 }

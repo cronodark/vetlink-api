@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,15 +20,14 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['status' => 401,'message' => 'Invalid credentials'], 401);
+            return response()->json(['status' => Response::HTTP_UNAUTHORIZED,'message' => 'Invalid credentials']);
         }
-
-        // Generate token based on user's role
+        
         $token = $user->createToken('user_login')->plainTextToken;
 
         return response()->json([
-            'status' => 200,
-            'message' => 'OK',
+            'status' => Response::HTTP_OK,
+            'message' => 'success',
             'data' => [
                 'token' => $token,
                 'user' => $user,
@@ -42,8 +42,8 @@ class AuthController extends Controller
 
     public function me(Request $request){
         return response()->json([
-            'status' => 200,
-            'message' => 'OK',
+            'status' => Response::HTTP_OK,
+            'message' => 'success',
             'data' => [Auth::user()]
         ]);
     }

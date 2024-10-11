@@ -13,6 +13,10 @@ class Veteriner extends Model
         'latitude',
         'latitude',
         'longitude',
-        'user_id',
+        'id_user',
     ];
+
+    public function user(){
+        $this->belongsTo(User::class, 'id_user');
+    }
 }
