@@ -20,9 +20,11 @@ class PetSeeder extends Seeder
 
         for ($i = 0; $i < 5; $i++) {
             Pet::create([
-                'pet_name' => $faker->name,
+                'pet_name' => $faker->randomElement(['Bella', 'Charlie', 'Luna', 'Max', 'Oliver', 'Simba', 'Chloe', 'Milo']),
                 'type' => $faker->randomElement(['Kucing', 'Anjing', 'Kelinci']),
-                'age' => $faker->randomNumber(),
+                'breed' => $faker->randomElement(['Persia', 'Bengal', 'Siamese', 'Maine Coon', 'Ragdoll', 'Bulldog', 'Golden Retriever', 'German Shepherd']),
+                'photo' => $faker->imageUrl(640, 480, 'animals', true),
+                'age' => $faker->numberBetween(1, 9),
                 'weight' => $faker->randomFloat(1, 1, 30),
                 'id_user' => $faker->randomElement($customerIds)
             ]);
