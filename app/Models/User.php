@@ -24,6 +24,8 @@ class User extends Authenticatable
         'password',
         'role',
         'phone',
+        'email_verified_at',
+        'remember_token',
         'photo'
     ];
 
@@ -53,4 +55,21 @@ class User extends Authenticatable
     // public function pets(){
     //     return $this->hasMany(Pet::class);
     // }
+
+    public function forumpost()
+    {
+        return $this->hasMany(ForumPost::class);
+
+    }
+
+    public function queuesAsCustomer()
+    {
+        return $this->hasMany(Queue::class, 'id_customer');
+    }
+
+    public function queuesAsVeteriner()
+    {
+        return $this->hasMany(Queue::class, 'id_veteriner');
+    }
+
 }
