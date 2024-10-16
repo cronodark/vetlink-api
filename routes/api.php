@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->name('api.login');
-Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.logout');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.logout');
 Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum')->name('api.me');
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {});

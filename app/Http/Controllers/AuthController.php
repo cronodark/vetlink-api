@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -22,9 +23,9 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['status' => Response::HTTP_UNAUTHORIZED,'message' => 'Invalid credentials']);
+            return response()->json(['status' => Response::HTTP_UNAUTHORIZED, 'message' => 'Invalid credentials']);
         }
-        
+
         $token = $user->createToken('user_login')->plainTextToken;
 
         return response()->json([
@@ -37,12 +38,25 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request){
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['status' => 200,'message' => 'Logged out successfully'], 200);
+    public function logout(Request $request)
+    {
+        try {
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Logged out successfully'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => 'Logout failed: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public function me(Request $request){
+    public function me(Request $request)
+    {
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'success',
@@ -60,7 +74,7 @@ class AuthController extends Controller
             'username' => 'required|string|max:255|unique:users',
             'phone' => 'required|string|max:20|unique:users',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => Response::HTTP_BAD_REQUEST,
@@ -68,7 +82,7 @@ class AuthController extends Controller
                 'errors' => $validator->errors()
             ], Response::HTTP_BAD_REQUEST);
         }
-    
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -76,13 +90,13 @@ class AuthController extends Controller
             'role' => $request->role,
             'username' => $request->username,
             'phone' => $request->phone,
-            'email_verified_at' => now(), 
+            'email_verified_at' => now(),
             'remember_token' => Str::random(10),
-           
+
         ]);
-    
+
         $token = $user->createToken('user_register')->plainTextToken;
-    
+
         return response()->json([
             'status' => Response::HTTP_CREATED,
             'message' => 'User Registered Success',
