@@ -41,9 +41,16 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
 // Route::middleware('auth:sanctum')->post('/forums', [ForumController::class, 'store']);
 // Route::middleware('auth:sanctum')->get('/forums/{id}', [ForumController::class,'show']);
 
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('forums', ForumController::class);
+    Route::get('/forums', [ForumController::class, 'index']);
+    Route::get('/forums/{id}', [ForumController::class, 'show']);
+    Route::post('/forums', [ForumController::class, 'store']);
+    Route::put('/forums/{id}', [ForumController::class, 'update']);
+    Route::delete('/forums/{id}', [ForumController::class, 'destroy']);
+    Route::get('/user/forums', [ForumController::class, 'userForums']);
 });
+
 
 
 
