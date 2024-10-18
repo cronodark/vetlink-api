@@ -8,6 +8,12 @@
     .active-nav-link { background: #3FA2F6;
                         color: #ffffff !important;
     }
+    .active-svg{
+        fill: #FFA33C !important
+    }
+    .not-active-svg{
+        fill: #BABABA !important
+    }
     .nav-item:hover { background: #3FA2F6;
                        color: #ffffff;
     }
