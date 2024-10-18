@@ -3,13 +3,13 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('dashboard');
+    return view('admin.dashboard');
 })->name('dashboard');
 
 Route::get('/hospital', function () {
-    return view('hospital');
+    return view('admin.hospital');
 })->name('hospital');
 
 Route::get('/forum', function () {
-    return view('forum');
+    return view('admin.forum');
 })->name('forum');
