@@ -55,12 +55,12 @@ class AuthController extends Controller
         }
     }
 
-    public function me(Request $request)
+    public function me()
     {
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'success',
-            'data' => [Auth::user()]
+            'data' => Auth::user()
         ]);
     }
 
