@@ -101,7 +101,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:3|confirmed',
+            'password' => 'required|string|min:3',
             'role' => 'required|in:customer,veteriner',
             'username' => 'required|string|max:255|unique:users',
             'phone' => 'required|string|max:20|unique:users',
@@ -126,14 +126,10 @@ class AuthController extends Controller
             'remember_token' => Str::random(10),
 
         ]);
-
-        $token = $user->createToken('user_register')->plainTextToken;
-
         return response()->json([
             'status' => Response::HTTP_CREATED,
             'message' => 'User Registered Success',
             'data' => [
-                'token' => $token,
                 'user' => $user,
             ]
         ], Response::HTTP_CREATED);
