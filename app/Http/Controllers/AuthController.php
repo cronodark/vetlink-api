@@ -64,6 +64,38 @@ class AuthController extends Controller
         ]);
     }
 
+    public function checkEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Check if the email exists in the database
+        $emailExists = User::where('email', $request->email)->exists();
+
+        if ($emailExists) {
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Email already exists',
+                'exists' => true
+            ]);
+        } else {
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Email does not exist, you can proceed with registration',
+                'exists' => false
+            ]);
+        }
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
