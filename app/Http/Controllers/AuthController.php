@@ -85,7 +85,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => Response::HTTP_OK,
                 'message' => 'Email already exists',
-                'exists' => true
+                'isExists' => true
             ]);
         } else {
             return response()->json([
