@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy PHP app to Azure Web App - VetLink
+name: Build and deploy PHP app to Azure Web App - vetlink
 
 on:
   push:
@@ -61,15 +61,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_09F04ED1C4EF4A6087217E0D95E45831 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_31FADF2BFBBC4F2AB357E000B50282BA }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_15C108CC7B634663A274B3BAD3E49925 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_36119F820C4B4ABA944A71365645BD2A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E680DD3835F24425927FCC12D56FC446 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AD33685C0FC7491F9409D5F29CE47694 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'VetLink'
+          app-name: 'vetlink'
           slot-name: 'Production'
           package: .
           
