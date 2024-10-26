@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\QueueController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -68,4 +69,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/veteriner/queue/{id}', [QueueController::class, 'showVeteriner'])->name('api.veteriner.show.queue');
         Route::delete('/veteriner/queue/{id}', [QueueController::class, 'destroy'])->name('api.veteriner.delete.queue');
     });
+
+    
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/forums/{id}/comments', [CommentController::class, 'index']);
+    Route::post('/forums/{id}/comments', [CommentController::class, 'store']);
+    Route::get('/forums/{id}/comments/{commentid}', [CommentController::class, 'show']);
+    Route::put('/forums/{id}/comments/{commentid}', [CommentController::class, 'update']);
+    Route::delete('/forums/{id}/comments/{commentid}', [CommentController::class, 'destroy']);
+});
 });

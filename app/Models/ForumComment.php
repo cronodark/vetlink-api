@@ -1,32 +1,26 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ForumPost extends Model
+class ForumComment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'last_seen',
-        'description',
-        'pet_image',
-        'id_user',
+        'content',
+        'forum_post_id',
+        'user_id'
     ];
-
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    
-    public function comments()
+    public function forumPost()
     {
-        return $this->hasMany(ForumComment::class);
+        return $this->belongsTo(ForumPost::class);
     }
-
 }
