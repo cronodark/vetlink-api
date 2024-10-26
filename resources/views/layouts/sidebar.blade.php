@@ -1,7 +1,7 @@
 <aside class="relative bg-sidebar h-screen w-80 hidden sm:block shadow-xl">
     <div class="p-6">
         <a href="index.html" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">
-            <img src="images/logo.png" alt="">
+            <img src="{{ asset('images/logo.png') }}" alt="">
         </a>
     </div>
 

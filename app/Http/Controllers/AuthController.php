@@ -101,6 +101,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'photo' => 'sometimes|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
             'password' => 'required|string|min:3',
             'role' => 'required|in:customer,veteriner',
             'username' => 'required|string|max:255|unique:users',
@@ -124,8 +125,21 @@ class AuthController extends Controller
             'phone' => $request->phone,
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
-
         ]);
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filename = $user->id . '.' . $file->getClientOriginalExtension(); // Rename the file with the user ID
+            $path = $file->storeAs('user', $filename, 'public'); // Store in 'storage/app/public/user' folder
+
+            // Optionally, save the file path to the user record
+            $user->update(['photo' => $path]);
+        }
+
+        if ($user->photo) {
+            $user->photo= url('storage/' . $user->photo);
+        }
+
         return response()->json([
             'status' => Response::HTTP_CREATED,
             'message' => 'User Registered Success',

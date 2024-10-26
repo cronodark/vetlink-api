@@ -32,16 +32,16 @@
     <!-- Dropdown Nav -->
     <nav :class="isOpen ? 'flex': 'hidden'" class="flex flex-col pt-4">
         <a href="{{ route('dashboard') }}" class="flex m-3 rounded-lg items-center active-nav-link text-[#878787] py-4 pl-4 nav-item transition duration-300 ease-in-out">
-            <img src="images/dashboard.png" class="mr-3 w-6" alt="">
+            <img src="{{ asset('images/dashboard.png') }}" class="mr-3 w-6" alt="">
             Dashboard
         </a>
         <a href="{{ route('hospital') }}" class="mt-5 m-3 rounded-lg flex items-center text-[#070404] opacity-75 hover:opacity-100 py-4 pl-6 nav-item transition duration-300 ease-in-out">
-            <img src="images/hospital.png" class="mr-3 w-6" alt="">
+            <img src="{{ asset('images/hospital.png') }}" class="mr-3 w-6" alt="">
             Hospital
         </a>
 
         <a href="{{ route('forum') }}" class="mt-5 m-3 rounded-lg flex items-center text-[#878787] opacity-75 hover:opacity-100 py-4 pl-6 nav-item transition duration-300 ease-in-out">
-            <img src="images/forum.png" class="mr-3 w-6" alt="">
+            <img src="{{ asset('images/forum.png') }}" class="mr-3 w-6" alt="">
             Forum
         </a>
 
@@ -49,7 +49,7 @@
             <i class="fas fa-sign-out-alt mr-3"></i>
             Sign out
         </a>
-       
+
     </nav>
     <!-- <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
         <i class="fas fa-plus mr-3"></i> New Report
