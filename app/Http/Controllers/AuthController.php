@@ -57,10 +57,18 @@ class AuthController extends Controller
 
     public function me()
     {
+
+        $user = Auth::user();
+
+        if ($user->photo) {
+            $user->photo= url('storage/' . $user->photo);
+        }
+
+
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'success',
-            'data' => Auth::user()
+            'data' => $user
         ]);
     }
 
