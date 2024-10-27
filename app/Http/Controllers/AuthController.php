@@ -16,11 +16,13 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'identifier' => 'required',
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->identifier)
+        ->orWhere('username', $request->identifier)
+        ->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['status' => Response::HTTP_UNAUTHORIZED, 'message' => 'Invalid credentials']);

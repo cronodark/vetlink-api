@@ -20,15 +20,22 @@ class VeterinerSeeder extends Seeder
 
         $faker = Factory::create('id_ID');
 
-        Veteriner::create([
-            'id_user' => $faker->randomElement($veterinersId),
-            'clinic_name' => 'hewan kasih',
-            'register_status' => false,
-            'longitude' => $faker->randomFloat(2, 0, 50),
-            'latitude' => $faker->randomFloat(2, 0, 50),
-            'address' => $faker->address(),
-            'document' => "file.docx"
-        ]);
+        $clinics = ['hewan kasih', 'hewan kita', 'hewan kami'];
 
+        foreach ($clinics as $clinicName) {
+            // Randomly select a user that doesn't already have a Veteriner record
+            $userId = $faker->randomElement($veterinersId);
+            if (!Veteriner::where('id_user', $userId)->exists()) {
+                Veteriner::create([
+                    'id_user' => $userId,
+                    'clinic_name' => $clinicName,
+                    'register_status' => false,
+                    'longitude' => $faker->randomFloat(2, 0, 50),
+                    'latitude' => $faker->randomFloat(2, 0, 50),
+                    'address' => $faker->address(),
+                    'document' => "file.docx"
+                ]);
+            }
+        }
     }
 }

@@ -47,15 +47,20 @@ class UserSeeder extends Seeder
             'password' => bcrypt('123'),
         ]);
 
-        User::factory()->create([
-            'name' => $faker->name(),
-            'email' => 'veteriner@gmail.com',
-            'username' => 'veteriner',
-            'role' => 'veteriner',
-            'photo' => null,
-            'phone' => $faker->phoneNumber(),
-            'password' => bcrypt('123'),
-        ]);
+        // Create users
+        $veterinerEmails = ['veteriner@gmail.com', 'veteriner2@gmail.com', 'veteriner3@gmail.com'];
+
+        foreach ($veterinerEmails as $email) {
+            User::factory()->create([
+                'name' => $faker->name(),
+                'email' => $email,
+                'username' => str_replace('@gmail.com', '', $email),
+                'role' => 'veteriner',
+                'photo' => null,
+                'phone' => $faker->phoneNumber(),
+                'password' => bcrypt('123'),
+            ]);
+        }
 
     }
 }
