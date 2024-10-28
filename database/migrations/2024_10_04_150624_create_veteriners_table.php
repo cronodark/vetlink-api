@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('veteriners', function (Blueprint $table) {
             $table->id();
             $table->string('clinic_name');
-            $table->boolean('register_status')->default(false);
+            $table->string('clinic_image');
+            $table->enum('register_status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->float('latitude');
             $table->float('longitude');
             $table->string('address');

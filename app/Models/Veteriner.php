@@ -11,6 +11,7 @@ class Veteriner extends Model
 
     protected $fillable = [
         'clinic_name',
+        'clinic_image',
         'register_status',
         'latitude',
         'longitude',

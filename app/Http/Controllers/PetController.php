@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Pet;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Expr\Cast\String_;
 
 class PetController extends Controller
 {
-    public function index($id)
+    public function index()
     {
-        $pets = Pet::where('id_user', $id)->get();
+        $user = Auth::user();
+
+        $pets = Pet::where('id_user', $user->id)->get();
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => "success",
