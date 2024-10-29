@@ -10,9 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class QueueController extends Controller
 {
-    public function indexCustomer($id)
+    public function indexCustomer()
     {
-        $queues = Queue::where('id_customer', $id)->get();
+        $user = Auth::user();
+        $queues = Queue::where('id_customer', $user->id)->get();
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Queues retrieved successfully',
@@ -119,7 +120,7 @@ class QueueController extends Controller
         }
 
         $queue = Queue::findOrFail($id);
-        
+
         if ($queue->id_veteriner !== $veteriner->id) {
             return response()->json([
                 'status' => Response::HTTP_FORBIDDEN,

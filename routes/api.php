@@ -42,11 +42,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::middleware(['role:customer'])->group(function () {
-        Route::get('/customer/{id}/queues', [QueueController::class, 'indexCustomer'])->name('api.customer.show.queues');
-        Route::get('/customer/queue/{id}', [QueueController::class, 'showCustomer'])->name('api.customer.show.queue');
-        Route::post('/customer/queue', [QueueController::class, 'create'])->name('api.customer.create.queue');
+    Route::group(['prefix' => 'customer'], function () {
+        Route::middleware(['role:customer'])->group(function () {
+            Route::get('/queues', [QueueController::class, 'indexCustomer'])->name('api.customer.show.queues');
+            Route::get('/queue/{id}', [QueueController::class, 'showCustomer'])->name('api.customer.show.queue');
+            Route::post('/queue', [QueueController::class, 'create'])->name('api.customer.create.queue');
+        });
     });
+
 
     Route::middleware(['role:veteriner'])->group(function () {
         Route::get('/veteriner/queues', [QueueController::class, 'indexVeteriner'])->name('api.veteriner.show.queues');
@@ -55,11 +58,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/forums/{id}/comments', [CommentController::class, 'index']);
-    Route::post('/forums/{id}/comments', [CommentController::class, 'store']);
-    Route::get('/forums/{id}/comments/{commentid}', [CommentController::class, 'show']);
-    Route::put('/forums/{id}/comments/{commentid}', [CommentController::class, 'update']);
-    Route::delete('/forums/{id}/comments/{commentid}', [CommentController::class, 'destroy']);
-});
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/forums/{id}/comments', [CommentController::class, 'index']);
+        Route::post('/forums/{id}/comments', [CommentController::class, 'store']);
+        Route::get('/forums/{id}/comments/{commentid}', [CommentController::class, 'show']);
+        Route::put('/forums/{id}/comments/{commentid}', [CommentController::class, 'update']);
+        Route::delete('/forums/{id}/comments/{commentid}', [CommentController::class, 'destroy']);
+    });
 });
