@@ -18,9 +18,12 @@ return new class extends Migration
             $table->enum('register_status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->float('latitude');
             $table->float('longitude');
+            $table->string('city');
             $table->string('address');
             $table->string('document');
             $table->foreignId('id_user')->constrained('users');
+            $table->time('open_time'); // Store opening time
+            $table->time('close_time'); // Store closing time
             $table->timestamps();
         });
     }
