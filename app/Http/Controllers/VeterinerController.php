@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\VeterinerResource;
+use App\Models\Veteriner;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class VeterinerController extends Controller
 {
@@ -11,7 +14,40 @@ class VeterinerController extends Controller
      */
     public function index()
     {
-        
+        $veteriners = Veteriner::all();
+
+        if (!$veteriners) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'No veteriners found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Success',
+            'data' => $veteriners
+        ], 200);
+    }
+
+    public function customerIndex()
+    {
+        $veteriners = Veteriner::where('register_status', 'approved')->get();
+
+        if (!$veteriners) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'No veteriners found',
+            ], 404);
+        }
+
+        $veteriners  =  VeterinerResource::collection($veteriners);
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Success',
+            'data' => $veteriners
+        ], 200);
     }
 
     /**
@@ -25,9 +61,40 @@ class VeterinerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $veteriner = Veteriner::findOrFail($id);
+
+        if (!$veteriner) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Veteriner not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Success',
+            'data' => $veteriner
+        ], 200);
+    }
+
+    public function customerShow($id)
+    {
+        $veteriner = Veteriner::where('register_status', 'approved')->find($id);
+
+        if (!$veteriner) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Veteriner not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Success',
+            'data' => $veteriner
+        ], 200);
     }
 
     /**

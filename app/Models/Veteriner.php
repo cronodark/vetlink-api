@@ -18,6 +18,13 @@ class Veteriner extends Model
         'address',
         'document',
         'id_user',
+        'city',
+        'open_time',
+        'closed_time',
+    ];
+
+    protected $hidden = [
+        'register_status'
     ];
 
     public function user()

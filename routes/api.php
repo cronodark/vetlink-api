@@ -5,6 +5,7 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\QueueController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\VeterinerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,9 +45,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::group(['prefix' => 'customer'], function () {
         Route::middleware(['role:customer'])->group(function () {
+            //queue
             Route::get('/queues', [QueueController::class, 'indexCustomer'])->name('api.customer.show.queues');
             Route::get('/queue/{id}', [QueueController::class, 'showCustomer'])->name('api.customer.show.queue');
             Route::post('/queue', [QueueController::class, 'create'])->name('api.customer.create.queue');
+
+            //veteriner
+            Route::get('/veteriners', [VeterinerController::class, 'customerIndex'])->name('api.customer.show.veteriners');
+            Route::get('/veteriner/{id}', [VeterinerController::class, 'customerShow'])->name('api.customer.show.veteriner');
+
         });
     });
 
