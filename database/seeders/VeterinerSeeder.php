@@ -42,8 +42,8 @@ class VeterinerSeeder extends Seeder
                 'clinic_name' => $clinicName,
                 'register_status' => $faker->randomElement(['pending', 'approved', 'rejected']),
                 'clinic_image' => $faker->randomElement([
-                    'https://cdn.discordapp.com/attachments/855482040333762590/1300381651066552380/img_rspets.png?ex=6720a249&is=671f50c9&hm=07a6e975d96d7b0c85018de4f92a2cb6f744c5c298a7de794ef8a7468dba7106&',
-                    'https://cdn.discordapp.com/attachments/855482040333762590/1300382137555488859/Foto-3-1-scaled.png?ex=6720a2bd&is=671f513d&hm=c812ec1a0af47e8d2703ef554fcf8ae3789be11402d9c01ecf13251128cb8a30&'
+                    'https://cdn.discordapp.com/attachments/855482040333762590/1300381651066552380/img_rspets.png?ex=672496c9&is=67234549&hm=728646c13a08e43a47995fecf6e86c96a3f21391ec220bf1037ce485c110772d&',
+                    'https://cdn.discordapp.com/attachments/855482040333762590/1300382137555488859/Foto-3-1-scaled.png?ex=6724973d&is=672345bd&hm=f21f140cb84f1ed9840db9701dd02fb0480efba923bd96604cb421218d3b4a27&'
                 ]),
                 'longitude' => $faker->randomFloat(2, 100.0, 110.0),
                 'latitude' => $faker->randomFloat(2, -10.0, -5.0),

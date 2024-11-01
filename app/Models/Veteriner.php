@@ -23,10 +23,6 @@ class Veteriner extends Model
         'closed_time',
     ];
 
-    protected $hidden = [
-        'register_status'
-    ];
-
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');

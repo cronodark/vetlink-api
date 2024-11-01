@@ -53,7 +53,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
             //veteriner
             Route::get('/veteriners', [VeterinerController::class, 'customerIndex'])->name('api.customer.show.veteriners');
             Route::get('/veteriner/{id}', [VeterinerController::class, 'customerShow'])->name('api.customer.show.veteriner');
-
         });
     });
 
@@ -62,6 +61,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/veteriner/queues', [QueueController::class, 'indexVeteriner'])->name('api.veteriner.show.queues');
         Route::get('/veteriner/queue/{id}', [QueueController::class, 'showVeteriner'])->name('api.veteriner.show.queue');
         Route::delete('/veteriner/queue/{id}', [QueueController::class, 'destroy'])->name('api.veteriner.delete.queue');
+    });
+
+    Route::middleware(['role:admin'])->group(function () {
+        Route::group(['prefix' => 'admin'], function () {
+            Route::get('/veteriners', [VeterinerController::class, 'index'])->name('api.veteriners.index');
+            Route::get('/veteriner/{id}', [VeterinerController::class, 'show'])->name('api.veteriners.show');
+        });
     });
 
 
