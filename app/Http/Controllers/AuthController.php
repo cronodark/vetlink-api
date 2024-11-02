@@ -29,6 +29,9 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('user_login')->plainTextToken;
+        if($user->photo != null){
+            $user->photo = url($user->photo);
+        }
 
         return response()->json([
             'status' => Response::HTTP_OK,

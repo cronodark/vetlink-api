@@ -15,13 +15,7 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->na
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.logout');
 Route::get('/profile', [AuthController::class, 'me'])->middleware('auth:sanctum')->name('api.me');
 
-Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
-    Route::get('/pets', [PetController::class, 'index'])->name('api.customer.show.pets');
-    Route::get('/pet/{id}', [PetController::class, 'show'])->name('api.customer.show.pet');
-    Route::post('/pet/{id}', [PetController::class, 'update'])->name('api.customer.update.pet');
-    Route::post('/pet', [PetController::class, 'create'])->name('api.customer.create.pet');
-    Route::delete('/pet/{id}', [PetController::class, 'delete'])->name('api.customer.delete.pet');
-});
+Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {});
 
 // Route::apiResource('forums', ForumController::class);
 
@@ -53,6 +47,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
             //veteriner
             Route::get('/veteriners', [VeterinerController::class, 'customerIndex'])->name('api.customer.show.veteriners');
             Route::get('/veteriner/{id}', [VeterinerController::class, 'customerShow'])->name('api.customer.show.veteriner');
+
+            Route::get('/pets', [PetController::class, 'index'])->name('api.customer.show.pets');
+            Route::get('/pet/{id}', [PetController::class, 'show'])->name('api.customer.show.pet');
+            Route::post('/pet/{id}', [PetController::class, 'update'])->name('api.customer.update.pet');
+            Route::post('/pet', [PetController::class, 'create'])->name('api.customer.create.pet');
+            Route::delete('/pet/{id}', [PetController::class, 'delete'])->name('api.customer.delete.pet');
         });
     });
 

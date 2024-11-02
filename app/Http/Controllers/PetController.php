@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pet;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Expr\Cast\String_;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 
 class PetController extends Controller
 {
@@ -16,7 +19,11 @@ class PetController extends Controller
     {
         $user = Auth::user();
 
-        $pets = Pet::where('id_user', $user->id)->get();
+        $pets = Pet::where('id_user', $user->id)->get()->map(function ($pet) {
+            $pet->photo = url($pet->photo); // Prepend the full base URL to the photo path
+            return $pet;
+        });
+
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => "success",
@@ -26,13 +33,31 @@ class PetController extends Controller
 
     public function show($id)
     {
-        $pet = Pet::findOrFail($id);
+        try {
+            // Attempt to find the pet by ID
+            $pet = Pet::findOrFail($id);
 
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'message' => "success",
-            'data' => $pet,
-        ]);
+            // Update the photo attribute to include the full URL
+            $pet->photo = url($pet->photo);
+
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => "success",
+                'data' => $pet,
+            ]);
+        } catch (ModelNotFoundException $e) {
+            // If pet not found, return a 404 error
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => "Pet not found",
+            ], Response::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            // For any other errors, return a 500 error with a generic message
+            return response()->json([
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => "An error occurred while retrieving the pet",
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function create(Request $request)
@@ -116,22 +141,39 @@ class PetController extends Controller
 
     public function delete($id)
     {
-        $pet = Pet::findOrFail($id);
+        try {
+            // Find the pet by ID or throw an exception if not found
+            $pet = Pet::findOrFail($id);
 
-        $filePath = $pet->photo;
-        $absolutePath = storage_path('app/' . str_replace('/storage/', 'public/', $filePath)); // Get absolute path
+            // Get the absolute file path for the pet's photo
+            $filePath = $pet->photo;
+            $absolutePath = storage_path('app/' . str_replace('/storage/', 'public/', $filePath));
 
-        // Check if the file exists before attempting to delete
-        if ($absolutePath) {
-            // Attempt to delete the file
-            File::delete($absolutePath);
+            // Check if the file exists and attempt to delete it
+            if (File::exists($absolutePath)) {
+                File::delete($absolutePath);
+            }
+
+            // Attempt to delete the pet record from the database
+            $pet->delete();
+
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => "Pet deleted successfully"
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            // Handle the case where the pet was not found
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => "Pet not found"
+            ], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            // Handle any other exceptions
+            return response()->json([
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => "Failed to delete pet: " . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        $pet->delete();
-
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'message' => "Pet deleted successfully"
-        ]);
     }
 
     /* TODO:
