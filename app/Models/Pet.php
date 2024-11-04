@@ -15,12 +15,22 @@ class Pet extends Model
         'photo',
         'breed',
         'age',
+        'gender',
         'weight',
+        'notes',
         'id_user',
     ];
 
     public function user(){
         return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function petType() {
+        return $this->belongsTo(PetType::class, 'type', 'id');
+    }
+
+    public function petBreed() {
+        return $this->belongsTo(PetBreed::class, 'breed', 'id');
     }
 
 }

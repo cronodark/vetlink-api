@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('pets', function (Blueprint $table) {
             $table->id();
             $table->string('pet_name');
-            $table->string('photo')->nullable();
-            $table->string('type');
-            $table->string('breed')->nullable();
-            $table->integer('age')->nullable();
-            $table->float('weight')->nullable();
+            $table->string('photo');
+            $table->integer('age');
+            $table->float('weight');
+            $table->string('gender');
+            $table->string('notes')->nullable();
+            $table->foreignId('type')->constrained('pet_types');
+            $table->foreignId('breed')->constrained('pet_breeds');
             $table->foreignId('id_user')->constrained('users');
             $table->timestamps();
         });

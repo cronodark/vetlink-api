@@ -48,11 +48,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/veteriners', [VeterinerController::class, 'customerIndex'])->name('api.customer.show.veteriners');
             Route::get('/veteriner/{id}', [VeterinerController::class, 'customerShow'])->name('api.customer.show.veteriner');
 
+            //pet
             Route::get('/pets', [PetController::class, 'index'])->name('api.customer.show.pets');
             Route::get('/pet/{id}', [PetController::class, 'show'])->name('api.customer.show.pet');
             Route::post('/pet/{id}', [PetController::class, 'update'])->name('api.customer.update.pet');
             Route::post('/pet', [PetController::class, 'create'])->name('api.customer.create.pet');
             Route::delete('/pet/{id}', [PetController::class, 'delete'])->name('api.customer.delete.pet');
+            Route::get('/pet-types-with-breeds', [PetController::class, 'typeWithBreeds'])->name('api.customer.get.type-with-breeds');
         });
     });
 

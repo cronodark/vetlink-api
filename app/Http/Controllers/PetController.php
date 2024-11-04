@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PetResource;
+use App\Http\Resources\PetTypeResource;
 use App\Models\Pet;
+use App\Models\PetType;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,15 +22,14 @@ class PetController extends Controller
     {
         $user = Auth::user();
 
-        $pets = Pet::where('id_user', $user->id)->get()->map(function ($pet) {
-            $pet->photo = url($pet->photo); // Prepend the full base URL to the photo path
-            return $pet;
-        });
+        $pets = Pet::with(['petType', 'petBreed'])
+            ->where('id_user', $user->id)
+            ->get();
 
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => "success",
-            'data' => $pets,
+            'data' => PetResource::collection($pets),
         ]);
     }
 
@@ -62,12 +64,15 @@ class PetController extends Controller
 
     public function create(Request $request)
     {
+
+        $user = Auth::user();
+
         $pet = Pet::create([
             'pet_name' => $request->pet_name,
+            'id_user' => $user->id,
             'type' => $request->type,
             'breed' => $request->breed,
             'age' => $request->age,
-            'id_user' => $request->id_user,
             'weight' => $request->weight
         ]);
 
@@ -83,8 +88,12 @@ class PetController extends Controller
             ]);
         }
 
+        if ($pet->photo != null) {
+            $pet->photo = url($pet->photo);
+        }
+
         return response()->json([
-            'status' => 'success',
+            'status' => Response::HTTP_OK,
             'message' => 'Pet created successfully',
             'data' => $pet,
         ], 201);
@@ -176,8 +185,13 @@ class PetController extends Controller
         }
     }
 
-    /* TODO:
-     * Implement the following methods:
-     * 2. update
-     */
+    public function typeWithBreeds()
+    {
+        $petTypes = PetType::with('breeds')->get();
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => "success",
+            'data' => PetTypeResource::collection($petTypes),
+        ]);
+    }
 }

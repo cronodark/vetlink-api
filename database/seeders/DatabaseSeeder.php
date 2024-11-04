@@ -16,11 +16,13 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         $this->call([
             UserSeeder::class,
+            PetTypeSeeder::class,
+            PetBreedSeeder::class,
             VeterinerSeeder::class,
             PetSeeder::class,
             ForumPostSeeder::class,
             QueueSeeder::class,
         ]);
-        
+
     }
 }
