@@ -72,4 +72,9 @@ class User extends Authenticatable
         return $this->hasMany(Queue::class, 'id_veteriner');
     }
 
+    public function veteriner()
+    {
+        return $this->hasOne(Veteriner::class, 'id_user');
+    }
+
 }
