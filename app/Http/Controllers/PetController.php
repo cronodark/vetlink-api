@@ -62,42 +62,43 @@ class PetController extends Controller
         }
     }
 
-    public function create(Request $request)
-    {
+        public function create(Request $request)
+        {
 
-        $user = Auth::user();
+            $user = Auth::user();
 
-        $pet = Pet::create([
-            'pet_name' => $request->pet_name,
-            'id_user' => $user->id,
-            'type' => $request->type,
-            'breed' => $request->breed,
-            'age' => $request->age,
-            'weight' => $request->weight
-        ]);
-
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $fileName = $pet->id . '.' . $file->extension();
-
-            $path = $file->storeAs('pet', $fileName, 'public');
-            $fullUrl = Storage::url($path);
-
-            $pet->update([
-                'photo' => $fullUrl,
+            $pet = Pet::create([
+                'pet_name' => $request->pet_name,
+                'id_user' => $user->id,
+                'type' => $request->type,
+                'gender' => $request->gender,
+                'breed' => $request->breed,
+                'age' => $request->age,
+                'weight' => $request->weight,
+                'notes' => $request->notes
             ]);
-        }
 
-        if ($pet->photo != null) {
-            $pet->photo = url($pet->photo);
-        }
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                $fileName = $pet->id . '.' . $file->getClientOriginalExtension();
 
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'message' => 'Pet created successfully',
-            'data' => $pet,
-        ], 201);
-    }
+                $path = $file->storeAs('pet', $fileName, 'public');
+
+                $pet->update([
+                    'photo' => $path,
+                ]);
+            }
+
+            if ($pet->photo != null) {
+                $pet->photo = url($pet->photo);
+            }
+
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Pet created successfully',
+                'data' => $pet,
+            ], 201);
+        }
 
     public function update(Request $request, $id)
     {

@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('pets', function (Blueprint $table) {
             $table->id();
             $table->string('pet_name');
-            $table->string('photo');
+            $table->string('photo')->nullable();
             $table->integer('age');
             $table->float('weight');
-            $table->string('gender');
+            $table->enum('gender', ['Male', 'Female']);
             $table->string('notes')->nullable();
             $table->foreignId('type')->constrained('pet_types');
             $table->foreignId('breed')->constrained('pet_breeds');
