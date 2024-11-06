@@ -23,15 +23,15 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $request->identifier)
-        ->orWhere('username', $request->identifier)
-        ->first();
+            ->orWhere('username', $request->identifier)
+            ->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['status' => Response::HTTP_UNAUTHORIZED, 'message' => 'Invalid credentials']);
         }
 
         $token = $user->createToken('user_login')->plainTextToken;
-        if($user->photo != null){
+        if ($user->photo != null) {
             $user->photo = url($user->photo);
         }
 
@@ -68,7 +68,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         if ($user->photo) {
-            $user->photo= url('storage/' . $user->photo);
+            $user->photo = url('storage/' . $user->photo);
         }
 
 
@@ -113,25 +113,43 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:3',
-            'role' => 'required|in:customer,veteriner',
-            'username' => 'required|string|max:255|unique:users',
-            'phone' => 'required|string|max:25|unique:users',
-            'photo' => 'sometimes|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
-            //Vetetiner
-            'clinic_name' => 'required_if:role,veteriner|string|max:255',
-            'clinic_image' => 'sometimes|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
-            'latitude' => 'required_if:role,veteriner|numeric',
-            'longitude' => 'required_if:role,veteriner|numeric',
-            'city' => 'required_if:role,veteriner|string',
-            'address' => 'required_if:role,veteriner|string',
-            'document' => 'sometimes|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
-            'open_time' => 'required_if:role,veteriner|date_format:H:i',
-            'close_time' => 'required_if:role,veteriner|date_format:H:i|after:open_time',
-        ]);
+        $validator = null;
+
+        if ($request->role == 'customer') {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:3',
+                'role' => 'required|in:customer,veteriner',
+                'username' => 'required|string|max:255|unique:users',
+                'phone' => 'required|string|max:25|unique:users',
+                'photo' => 'sometimes|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
+            ]);
+        } else if ($request->role == 'veteriner') {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:3',
+                'role' => 'required|in:customer,veteriner',
+                'username' => 'required|string|max:255|unique:users',
+                'phone' => 'required|string|max:25|unique:users',
+                'photo' => 'sometimes|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
+                'clinic_name' => 'required_if:role,veteriner|string|max:255',
+                'clinic_image' => 'sometimes|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
+                'latitude' => 'required_if:role,veteriner|numeric',
+                'longitude' => 'required_if:role,veteriner|numeric',
+                'city' => 'required_if:role,veteriner|string',
+                'address' => 'required_if:role,veteriner|string',
+                'document' => 'sometimes|file|mimes:docx,pdf',
+                'open_time' => 'required_if:role,veteriner|date_format:H:i',
+                'close_time' => 'required_if:role,veteriner|date_format:H:i|after:open_time',
+            ]);
+        } else {
+            return response()->json([
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => 'Invalid Role',
+            ], Response::HTTP_BAD_REQUEST);
+        }
 
         if ($validator->fails()) {
             return response()->json([
@@ -144,7 +162,6 @@ class AuthController extends Controller
         DB::beginTransaction();
 
         try {
-            
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -156,17 +173,16 @@ class AuthController extends Controller
                 'remember_token' => Str::random(10),
             ]);
 
-            
             if ($request->hasFile('photo')) {
                 $file = $request->file('photo');
-                $filename = $user->id . '.' . $file->getClientOriginalExtension(); // Rename the file with the user ID
-                $path = $file->storeAs('user', $filename, 'public'); // Store in 'storage/app/public/user' folder
-    
-                // Optionally, save the file path to the user record
+                $filename = $user->id . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('user', $filename, 'public');
                 $user->update(['photo' => $path]);
             }
 
-            
+
+            $veterinerData = null;
+
             if ($request->role === 'veteriner') {
                 $veterinerData = [
                     'clinic_name' => $request->clinic_name,
@@ -180,7 +196,6 @@ class AuthController extends Controller
                     'close_time' => $request->close_time,
                 ];
 
-                
                 if ($request->hasFile('clinic_image')) {
                     $file = $request->file('clinic_image');
                     $filename = 'clinic_' . $user->id . '.' . $file->getClientOriginalExtension();
@@ -188,7 +203,6 @@ class AuthController extends Controller
                     $veterinerData['clinic_image'] = $path;
                 }
 
-                
                 if ($request->hasFile('document')) {
                     $file = $request->file('document');
                     $filename = 'doc_' . $user->id . '.' . $file->getClientOriginalExtension();
@@ -201,13 +215,12 @@ class AuthController extends Controller
             }
 
             DB::commit();
-            
+
             if ($user->photo) {
                 $user->photo = url('storage/' . $user->photo);
             }
 
-            
-            if ($user->veteriner) {
+            if ($request->role === 'veteriner') {
                 if ($user->veteriner->clinic_image) {
                     $user->veteriner->clinic_image = url('storage/' . $user->veteriner->clinic_image);
                 }
@@ -216,17 +229,28 @@ class AuthController extends Controller
                 }
             }
 
-        
+            $responseData = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'username' => $user->username,
+                'phone' => $user->phone,
+                'email_verified_at' => $user->email_verified_at,
+                'updated_at' => $user->updated_at,
+                'created_at' => $user->created_at,
+                'id' => $user->id,
+                'photo' => $user->photo,
+            ];
+
+            if ($request->role === 'veteriner') {
+                $responseData['veteriner'] = $user->veteriner;
+            }
 
             return response()->json([
                 'status' => Response::HTTP_CREATED,
                 'message' => 'User Registered Success',
-                'data' => 
-                [
-                    'user' => $user,
-                ]
+                'data' => $responseData
             ], Response::HTTP_CREATED);
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([

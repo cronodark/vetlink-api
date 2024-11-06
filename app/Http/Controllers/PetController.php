@@ -62,43 +62,43 @@ class PetController extends Controller
         }
     }
 
-        public function create(Request $request)
-        {
+    public function create(Request $request)
+    {
 
-            $user = Auth::user();
+        $user = Auth::user();
 
-            $pet = Pet::create([
-                'pet_name' => $request->pet_name,
-                'id_user' => $user->id,
-                'type' => $request->type,
-                'gender' => $request->gender,
-                'breed' => $request->breed,
-                'age' => $request->age,
-                'weight' => $request->weight,
-                'notes' => $request->notes
+        $pet = Pet::create([
+            'pet_name' => $request->pet_name,
+            'id_user' => $user->id,
+            'type' => $request->type,
+            'gender' => $request->gender,
+            'breed' => $request->breed,
+            'age' => $request->age,
+            'weight' => $request->weight,
+            'notes' => $request->notes
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $fileName = $pet->id . '.' . $file->getClientOriginalExtension();
+
+            $path = $file->storeAs('pet', $fileName, 'public');
+
+            $pet->update([
+                'photo' => $path,
             ]);
-
-            if ($request->hasFile('photo')) {
-                $file = $request->file('photo');
-                $fileName = $pet->id . '.' . $file->getClientOriginalExtension();
-
-                $path = $file->storeAs('pet', $fileName, 'public');
-
-                $pet->update([
-                    'photo' => $path,
-                ]);
-            }
-
-            if ($pet->photo != null) {
-                $pet->photo = url($pet->photo);
-            }
-
-            return response()->json([
-                'status' => Response::HTTP_OK,
-                'message' => 'Pet created successfully',
-                'data' => $pet,
-            ], 201);
         }
+
+        if ($pet->photo != null) {
+            $pet->photo = url($pet->photo);
+        }
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Pet created successfully',
+            'data' => $pet,
+        ], 201);
+    }
 
     public function update(Request $request, $id)
     {
@@ -155,16 +155,16 @@ class PetController extends Controller
             // Find the pet by ID or throw an exception if not found
             $pet = Pet::findOrFail($id);
 
-            // Get the absolute file path for the pet's photo
+            // Get the file path for the pet's photo
             $filePath = $pet->photo;
-            $absolutePath = storage_path('app/' . str_replace('/storage/', 'public/', $filePath));
+            $absolutePath = public_path("storage/{$filePath}");
 
-            // Check if the file exists and attempt to delete it
-            if (File::exists($absolutePath)) {
+            // Check if the file exists and is not the default image
+            if (File::exists($absolutePath) && $filePath !== 'pet/default.jpeg') {
                 File::delete($absolutePath);
             }
 
-            // Attempt to delete the pet record from the database
+            // Delete the pet record from the database
             $pet->delete();
 
             return response()->json([

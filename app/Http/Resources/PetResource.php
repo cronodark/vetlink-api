@@ -14,10 +14,10 @@ class PetResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return[
+        return [
             'id' => $this->id,
             'pet_name' => $this->pet_name,
-            'photo' => url($this->photo),
+            'photo' => url('/storage/' . $this->photo),
             'type' => $this->petType->name,
             'breed' => $this->petBreed->breed_name,
             'gender' => $this->gender,

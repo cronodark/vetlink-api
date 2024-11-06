@@ -33,7 +33,7 @@ class PetSeeder extends Seeder
                 'pet_name' => $faker->randomElement(['Bella', 'Charlie', 'Luna', 'Max', 'Oliver', 'Simba', 'Chloe', 'Milo']),
                 'type' => $petType->id, // Set type ID from the selected PetType
                 'breed' => $breed->id, // Set breed ID from the selected PetBreed
-                'photo' => $faker->imageUrl(640, 480, 'animals', true),
+                'photo' => "pet/default.jpeg",
                 'gender' => $faker->randomElement(['Male', 'Female']),
                 'age' => $faker->numberBetween(1, 9),
                 'notes' => $faker->randomElement(['','Lorem ipsum dolor sit amet']),

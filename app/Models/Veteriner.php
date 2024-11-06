@@ -20,7 +20,7 @@ class Veteriner extends Model
         'id_user',
         'city',
         'open_time',
-        'closed_time',
+        'close_time',
     ];
 
     public function user()
