@@ -24,8 +24,6 @@ class PetResource extends JsonResource
             'age' => $this->age,
             'weight' => $this->weight,
             'notes' => $this->notes,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

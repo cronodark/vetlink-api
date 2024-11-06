@@ -36,12 +36,12 @@ class PetController extends Controller
     public function show($id)
     {
         try {
-            // Attempt to find the pet by ID
-            $pet = Pet::findOrFail($id);
+            $pet = Pet::with(['petType', 'petBreed'])->where('id', $id)->firstOrFail();
 
-            // Update the photo attribute to include the full URL
-            $pet->photo = url($pet->photo);
+            // Wrap the result with PetResource to format it correctly
+            $pet = new PetResource($pet);
 
+            // Return a single object in the JSON response
             return response()->json([
                 'status' => Response::HTTP_OK,
                 'message' => "success",
