@@ -102,46 +102,47 @@ class PetController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validate the request data for fields and file
+        // Validate the request data
         $validatedData = $request->validate([
             'pet_name' => 'sometimes|string|max:255',
-            'type' => 'sometimes|string|max:255',
-            'breed' => 'sometimes|string|max:255',
-            'age' => 'sometimes|integer',
-            'id_user' => 'sometimes|integer',
-            'weight' => 'sometimes|numeric',
-            'file' => 'nullable|file|image|max:51200', // Max 50MB image file
+            'photo' => 'nullable|file|image|max:51200', // Max 50MB image file
+            'age' => 'sometimes',
+            'weight' => 'sometimes',
+            'gender' => 'sometimes|string|max:255',
+            'notes' => 'nullable|string|max:255',
+            'type' => 'sometimes',
+            'breed' => 'sometimes',
         ]);
 
         // Find the pet by ID or throw 404 error if not found
         $pet = Pet::findOrFail($id);
 
-        // If a new file is uploaded, delete the old file first
-        if ($request->hasFile('file')) {
-            // Get the old file path stored in the database (e.g., '/storage/pet/15.jpg')
-            $oldFilePath = storage_path('app/' . str_replace('/storage/', 'public/', $pet->photo)); // Make the path relative to 'public/'
+        // Store the old file path before updating
+        $oldFilePath = $pet->photo ? public_path("storage/" . $pet->photo) : null;
 
-            // Delete the old file if it exists in the storage
-            if (File::exists($oldFilePath)) {
-                File::delete($oldFilePath);
+        // Update the pet fields with validated input
+        $pet->update($validatedData);
+
+        // If a new file is uploaded, delete the old file first
+        if ($request->hasFile('photo')) {
+            if ($oldFilePath && File::exists($oldFilePath) && $pet->photo !== 'pet/default.jpeg') {
+                File::delete($oldFilePath); // Delete the old photo if it exists and is not the default image
             }
 
-            // Upload the new file
-            $file = $request->file('file'); // Get the uploaded file
-            $fileName = $pet->id . '.' . $file->extension(); // Generate new file name using pet ID
-            $path = $file->storeAs('pet', $fileName, 'public'); // Store the file in 'public/pet' directory
+            // Store the new file
+            $file = $request->file('photo');
+            $fileName = $pet->id . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('pet', $fileName, 'public'); // Store in 'public/pet' directory
 
-            // Store the full URL of the new file in the 'photo' field of the pet
-            $fullUrl = Storage::url($path);
-            $pet->update([
-                'photo' => $fullUrl,
-            ]);
+            if ($path) {
+                // Update the pet's photo field with the new path
+                $pet->update([
+                    'photo' => $path,
+                ]);
+            }
         }
 
-        // Update the pet fields based on validated input
-        $pet->update($validatedData); // Update fields like pet_name, type, breed, age, etc.
-
-        // Return the updated pet info in the response
+        // Return the updated pet info
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Pet updated successfully',
