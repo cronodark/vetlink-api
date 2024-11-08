@@ -104,14 +104,14 @@ class PetController extends Controller
     {
         // Validate the request data
         $validatedData = $request->validate([
-            'pet_name' => 'sometimes|string|max:255',
-            'photo' => 'nullable|file|image|max:51200', // Max 50MB image file
-            'age' => 'sometimes',
-            'weight' => 'sometimes',
-            'gender' => 'sometimes|string|max:255',
-            'notes' => 'nullable|string|max:255',
-            'type' => 'sometimes',
-            'breed' => 'sometimes',
+            'pet_name' => 'sometimes|required|string|max:255',
+            'photo' => 'sometimes|required|file|image|max:51200', // Max 50MB image file
+            'age' => 'sometimes|required',
+            'weight' => 'sometimes|required|',
+            'gender' => 'sometimes|required|string|max:255',
+            'notes' => 'sometimes|nullable|string|max:255',
+            'type' => 'sometimes|required',
+            'breed' => 'sometimes|required',
         ]);
 
         // Find the pet by ID or throw 404 error if not found
@@ -141,6 +141,8 @@ class PetController extends Controller
                 ]);
             }
         }
+
+        $pet = new PetResource($pet);
 
         // Return the updated pet info
         return response()->json([
