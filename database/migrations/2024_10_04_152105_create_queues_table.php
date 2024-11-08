@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->dateTime('appointment_time');
             $table->string('status');
+            $table->foreignId('id_pet')->constrained('pets');
             $table->foreignId('id_customer')->constrained('users');
             $table->foreignId('id_veteriner')->constrained('users');
             $table->timestamps();

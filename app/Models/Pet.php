@@ -33,4 +33,7 @@ class Pet extends Model
         return $this->belongsTo(PetBreed::class, 'breed', 'id');
     }
 
+    public function queue(){
+        return $this->hasMany(Queue::class);
+    }
 }

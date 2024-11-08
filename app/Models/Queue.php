@@ -14,7 +14,7 @@ class Queue extends Model
         'status',
         'id_customer',
         'id_veteriner',
-        'veterinarian_id',
+        'id_pet',
     ];
 
     public function customer(){
@@ -23,5 +23,9 @@ class Queue extends Model
 
     public function veteriner(){
         $this->belongsTo(Veteriner::class, 'id_verteriner');
+    }
+
+    public function pet(){
+        $this->belongsTo(Pet::class, 'id_pet');
     }
 }

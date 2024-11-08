@@ -49,7 +49,7 @@ class VeterinerSeeder extends Seeder
                 'latitude' => $faker->randomFloat(2, -10.0, -5.0),
                 'address' => $faker->address(),
                 'document' => "file.docx",
-                'city' => $faker->city(),
+                'city' => $faker->randomElement(["Bogor", "Depok"]),
                 'open_time' => $faker->time($format = 'H:i', $max = '08:00'), // e.g., generates a time up to 8:00 AM
                 'close_time' => $faker->time($format = 'H:i', $max = '17:00'), // e.g., generates a time up to 5:00 PM
             ]);

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Pet;
 use App\Models\Queue;
 use App\Models\User;
 use App\Models\Veteriner;
@@ -21,11 +22,16 @@ class QueueSeeder extends Seeder
         $veterinerIds = Veteriner::pluck('id')->toArray();
 
         for($i = 0; $i < 10; $i++) {
+
+            $pets = Pet::where('id_user', $customerIds)->get();
+            $petId = $pets->isNotEmpty() ? $pets->random()->id : null;
+
             Queue::create([
                 'appointment_time' => $faker->dateTimeBetween('now', '+2 weeks'),
                 'status' => $faker->randomElement(['pending', 'ongoing', 'finished']),
                 'id_customer' => $faker->randomElement($customerIds),
                 'id_veteriner' => $faker->randomElement($veterinerIds),
+                'id_pet' => $petId,
             ]);
         }
 
