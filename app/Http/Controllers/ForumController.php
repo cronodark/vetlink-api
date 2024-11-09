@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ForumPostResource;
 use App\Models\ForumPost;
+use Database\Seeders\ForumPostSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +14,8 @@ class ForumController extends Controller
 {
     public function index()
     {
-        $forums = ForumPost::with(['user','comments'])->get();
+        $forums = ForumPost::with(['user','comments.user'])->get();
+        $forums = ForumPostResource::collection($forums);
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Success',
