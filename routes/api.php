@@ -55,6 +55,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/pet', [PetController::class, 'create'])->name('api.customer.create.pet');
             Route::delete('/pet/{id}', [PetController::class, 'delete'])->name('api.customer.delete.pet');
             Route::get('/pet-types-with-breeds', [PetController::class, 'typeWithBreeds'])->name('api.customer.get.type-with-breeds');
+
+            //forum
+            Route::post('/forum', [ForumController::class, 'store'])->name('api.customer.forum.store');
+            Route::get('/forums', [ForumController::class, 'index'])->name('api.customer.forum.index');
+            Route::post('/forum/{id}', [ForumController::class, 'update'])->name('api.customer.forum.update');
+            Route::delete('/forum/{id}', [ForumController::class, 'destroy'])->name('api.customer.forum.delete');
         });
     });
 

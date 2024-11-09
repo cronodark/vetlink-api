@@ -17,15 +17,18 @@ class Queue extends Model
         'id_pet',
     ];
 
-    public function customer(){
-        $this->belongsTo(User::class, 'id_customer');
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'id_customer');
     }
 
-    public function veteriner(){
-        $this->belongsTo(Veteriner::class, 'id_verteriner');
+    public function veteriner()
+    {
+        return $this->belongsTo(Veteriner::class, 'id_veteriner');
     }
 
-    public function pet(){
-        $this->belongsTo(Pet::class, 'id_pet');
+    public function pet()
+    {
+        return $this->belongsTo(Pet::class, 'id_pet');
     }
 }

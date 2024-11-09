@@ -28,7 +28,7 @@ class QueueSeeder extends Seeder
 
             Queue::create([
                 'appointment_time' => $faker->dateTimeBetween('now', '+2 weeks'),
-                'status' => $faker->randomElement(['pending', 'ongoing', 'finished']),
+                'status' => $faker->randomElement(['canceled', 'ongoing', 'finished']),
                 'id_customer' => $faker->randomElement($customerIds),
                 'id_veteriner' => $faker->randomElement($veterinerIds),
                 'id_pet' => $petId,

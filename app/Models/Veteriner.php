@@ -30,6 +30,6 @@ class Veteriner extends Model
 
     public function queues()
     {
-        return $this->hasMany(Queue::class, 'id_veteriner');
+        return $this->hasMany(Queue::class);
     }
 }

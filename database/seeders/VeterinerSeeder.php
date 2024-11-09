@@ -42,8 +42,8 @@ class VeterinerSeeder extends Seeder
                 'clinic_name' => $clinicName,
                 'register_status' => $faker->randomElement(['pending', 'approved', 'rejected']),
                 'clinic_image' => $faker->randomElement([
-                    'https://cdn.discordapp.com/attachments/855482040333762590/1300381651066552380/img_rspets.png?ex=672496c9&is=67234549&hm=728646c13a08e43a47995fecf6e86c96a3f21391ec220bf1037ce485c110772d&',
-                    'https://cdn.discordapp.com/attachments/855482040333762590/1300382137555488859/Foto-3-1-scaled.png?ex=6724973d&is=672345bd&hm=f21f140cb84f1ed9840db9701dd02fb0480efba923bd96604cb421218d3b4a27&'
+                    'https://asset-2.tstatic.net/wartakota/foto/bank/images/20140722-rumah-sakit-rs.jpg',
+                    'https://upload.wikimedia.org/wikipedia/id/f/f4/RS_Hewan_UB.png'
                 ]),
                 'longitude' => $faker->randomFloat(2, 100.0, 110.0),
                 'latitude' => $faker->randomFloat(2, -10.0, -5.0),

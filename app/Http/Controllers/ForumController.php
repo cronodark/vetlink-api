@@ -12,7 +12,7 @@ class ForumController extends Controller
 {
     public function index()
     {
-        $forums = ForumPost::with('user')->get();
+        $forums = ForumPost::with(['user','comments'])->get();
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Success',

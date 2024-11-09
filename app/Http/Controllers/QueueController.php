@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\QueueResource;
 use App\Models\Queue;
 use App\Models\Veteriner;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ class QueueController extends Controller
     {
         $user = Auth::user();
         $queues = Queue::where('id_customer', $user->id)->get();
+        $queues = QueueResource::collection($queues);
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Queues retrieved successfully',
