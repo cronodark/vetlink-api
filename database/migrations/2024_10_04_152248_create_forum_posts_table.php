@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('last_seen');
+            $table->string('characteristics');
+            $table->enum('status', ['lost' ,'found']);
             $table->text('description');
             $table->string('pet_image');
             $table->foreignId('id_user')->constrained('users');

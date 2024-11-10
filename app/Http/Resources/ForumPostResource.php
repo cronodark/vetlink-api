@@ -18,11 +18,13 @@ class ForumPostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'last_seen' => $this->last_seen,
+            'characteristics' => $this->characteristics,
             'description' => $this->description,
             'pet_image' => $this->pet_image,
             'user' => [
                 'id' => $this->user->id,
-                'name' => $this->user->name,
+                'username' => $this->user->name,
+                'photo' => $this->user->photo,
             ],
             'comments' => ForumCommentResource::collection($this->comments)
         ];

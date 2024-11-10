@@ -21,9 +21,11 @@ class ForumPostSeeder extends Seeder
         for($i = 0; $i < 20; $i++){
             ForumPost::create([
                 'title' => $faker->sentence(5),
+                'last_seen' => $faker->city(),
+                'status' => $faker->randomElement(['lost', 'found']),
+                'characteristics' => $faker->text(30),
                 'description' => $faker->paragraph(5),
                 'id_user' => $faker->randomElement($customerIds),
-                'last_seen' => $faker->city(),
                 'pet_image' => $faker->imageUrl(640, 480, 'cats'),
             ]);
         }
