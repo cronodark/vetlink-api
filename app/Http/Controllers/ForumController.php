@@ -14,7 +14,7 @@ class ForumController extends Controller
 {
     public function index()
     {
-        $forums = ForumPost::with(['user','comments.user'])->get();
+        $forums = ForumPost::with(['user', 'comments.user'])->get();
         $forums = ForumPostResource::collection($forums);
         return response()->json([
             'status' => Response::HTTP_OK,

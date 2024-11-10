@@ -87,6 +87,7 @@ class QueueController extends Controller
         $validator = validator($request->all(), [
             'appointment_time' => 'required|date',
             'id_veteriner' => 'required|exists:users,id',
+            'id_pet' => 'required|exists:pets,id'
         ]);
 
         if ($validator->fails()) {
@@ -99,9 +100,10 @@ class QueueController extends Controller
 
         $queue = Queue::create([
             'appointment_time' => $request->appointment_time,
-            'status' => 'pending',
+            'status' => 'ongoing',
             'id_customer' => Auth::id(),
             'id_veteriner' => $request->id_veteriner,
+            'id_pet' => $request->id_pet
         ]);
 
         return response()->json([
