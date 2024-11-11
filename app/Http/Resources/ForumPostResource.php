@@ -16,6 +16,7 @@ class ForumPostResource extends JsonResource
     {
         return[
             'id' => $this->id,
+            'status' => $this->status,
             'title' => $this->title,
             'last_seen' => $this->last_seen,
             'characteristics' => $this->characteristics,
@@ -23,7 +24,7 @@ class ForumPostResource extends JsonResource
             'pet_image' => $this->pet_image,
             'user' => [
                 'id' => $this->user->id,
-                'username' => $this->user->name,
+                'username' => $this->user->username,
                 'photo' => $this->user->photo,
             ],
             'comments' => ForumCommentResource::collection($this->comments)

@@ -15,25 +15,15 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->na
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.logout');
 Route::get('/profile', [AuthController::class, 'me'])->middleware('auth:sanctum')->name('api.me');
 
-Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {});
 
-// Route::apiResource('forums', ForumController::class);
-
-// Route::middleware('auth:sanctum')->post('/forums', [ForumController::class, 'store']);
-// Route::middleware('auth:sanctum')->get('/forums/{id}', [ForumController::class,'show']);
-
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/forums', [ForumController::class, 'index']);
-    Route::get('/forums/{id}', [ForumController::class, 'show']);
-    Route::post('/forums', [ForumController::class, 'store']);
-    Route::put('/forums/{id}', [ForumController::class, 'update']);
-    Route::delete('/forums/{id}', [ForumController::class, 'destroy']);
-    Route::get('/user/forums', [ForumController::class, 'userForums']);
-});
-
-
-
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('/forums', [ForumController::class, 'index']);
+//     Route::get('/forums/{id}', [ForumController::class, 'show']);
+//     Route::post('/forums', [ForumController::class, 'store']);
+//     Route::put('/forums/{id}', [ForumController::class, 'update']);
+//     Route::delete('/forums/{id}', [ForumController::class, 'destroy']);
+//     Route::get('/user/forums', [ForumController::class, 'userForums']);
+// });
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -64,11 +54,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
     });
 
-
     Route::middleware(['role:veteriner'])->group(function () {
-        Route::get('/veteriner/queues', [QueueController::class, 'indexVeteriner'])->name('api.veteriner.show.queues');
-        Route::get('/veteriner/queue/{id}', [QueueController::class, 'showVeteriner'])->name('api.veteriner.show.queue');
-        Route::delete('/veteriner/queue/{id}', [QueueController::class, 'destroy'])->name('api.veteriner.delete.queue');
+        Route::group(['prefix' => 'veteriner'], function () {
+            Route::get('/veteriner/queues', [QueueController::class, 'indexVeteriner'])->name('api.veteriner.show.queues');
+            Route::get('/veteriner/queue/{id}', [QueueController::class, 'showVeteriner'])->name('api.veteriner.show.queue');
+            Route::delete('/veteriner/queue/{id}', [QueueController::class, 'destroy'])->name('api.veteriner.delete.queue');
+        });
     });
 
     Route::middleware(['role:admin'])->group(function () {
@@ -79,11 +70,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
 
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/forums/{id}/comments', [CommentController::class, 'index']);
-        Route::post('/forums/{id}/comments', [CommentController::class, 'store']);
-        Route::get('/forums/{id}/comments/{commentid}', [CommentController::class, 'show']);
-        Route::put('/forums/{id}/comments/{commentid}', [CommentController::class, 'update']);
-        Route::delete('/forums/{id}/comments/{commentid}', [CommentController::class, 'destroy']);
-    });
+    // Route::middleware('auth:sanctum')->group(function () {
+    //     Route::get('/forums/{id}/comments', [CommentController::class, 'index']);
+    //     Route::post('/forums/{id}/comments', [CommentController::class, 'store']);
+    //     Route::get('/forums/{id}/comments/{commentid}', [CommentController::class, 'show']);
+    //     Route::put('/forums/{id}/comments/{commentid}', [CommentController::class, 'update']);
+    //     Route::delete('/forums/{id}/comments/{commentid}', [CommentController::class, 'destroy']);
+    // });
 });

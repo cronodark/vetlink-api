@@ -19,9 +19,10 @@ class ForumCommentResource extends JsonResource
             'user' => [
                 'id' => $this->user_id,
                 'name' => $this->user->name,
+                'username' => $this->user->username,
             ],
             'content' => $this->content,
-            
+
 
         ];
     }
