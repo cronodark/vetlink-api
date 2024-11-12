@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('clinic_name');
             $table->string('clinic_image')->nullable();
             $table->enum('register_status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->float('latitude');
-            $table->float('longitude');
+            $table->string('latitude');
+            $table->string('longitude');
             $table->string('city');
             $table->string('address');
             $table->string('document')->nullable();

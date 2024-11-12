@@ -45,8 +45,8 @@ class VeterinerSeeder extends Seeder
                     'https://asset-2.tstatic.net/wartakota/foto/bank/images/20140722-rumah-sakit-rs.jpg',
                     'https://upload.wikimedia.org/wikipedia/id/f/f4/RS_Hewan_UB.png'
                 ]),
-                'longitude' => $faker->randomFloat(2, 100.0, 110.0),
-                'latitude' => $faker->randomFloat(2, -10.0, -5.0),
+                'longitude' => "-6.5987029",
+                'latitude' => "106.8060503",
                 'address' => $faker->address(),
                 'document' => "file.docx",
                 'city' => $faker->randomElement(["Bogor", "Depok"]),

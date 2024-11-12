@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\QueueResource;
+use App\Http\Resources\VeterinerBasicResource;
+use App\Http\Resources\VeterinerQueueResource;
 use App\Models\Queue;
 use App\Models\Veteriner;
 use Illuminate\Http\Request;
@@ -137,6 +139,16 @@ class QueueController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Queue deleted successfully'
+        ], Response::HTTP_OK);
+    }
+
+    public function latest()
+    {
+        $queue = Queue::with('veteriner')->where('id_customer', Auth::id())->latest()->first();
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Latest queue retrieved successfully',
+            'data' => new VeterinerBasicResource($queue->veteriner)
         ], Response::HTTP_OK);
     }
 }

@@ -31,6 +31,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::middleware(['role:customer'])->group(function () {
             //queue
             Route::get('/queues', [QueueController::class, 'indexCustomer'])->name('api.customer.show.queues');
+            Route::get('/queue/latest', [QueueController::class, 'latest'])->name('api.customer.latest.queue');
             Route::get('/queue/{id}', [QueueController::class, 'showCustomer'])->name('api.customer.show.queue');
             Route::post('/queue', [QueueController::class, 'create'])->name('api.customer.create.queue');
 
