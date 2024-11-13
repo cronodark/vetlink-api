@@ -24,6 +24,8 @@ class VeterinerController extends Controller
             ], 404);
         }
 
+        $veteriners  =  VeterinerResource::collection($veteriners);
+
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Success',
