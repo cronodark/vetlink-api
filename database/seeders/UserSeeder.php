@@ -51,8 +51,7 @@ class UserSeeder extends Seeder
         $veterinerEmails = [
             'veteriner@gmail.com', 'veteriner1@gmail.com', 'veteriner2@gmail.com',
             'veteriner3@gmail.com','veteriner4@gmail.com', 'veteriner5@gmail.com',
-            'veteriner6@gmail.com','veteriner7@gmail.com', 'veteriner8@gmail.com',
-            'veteriner9@gmail.com',
+            'veteriner6@gmail.com'
         ];
 
         foreach ($veterinerEmails as $email) {
