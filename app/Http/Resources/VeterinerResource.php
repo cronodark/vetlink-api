@@ -19,6 +19,7 @@ class VeterinerResource extends JsonResource
 
         return[
             'id' => $this->id,
+            'register_status' => $this->register_status,
             'clinic_name' => $this->clinic_name,
             'clinic_image' => $this->clinic_image,
             'city' => $this->city,

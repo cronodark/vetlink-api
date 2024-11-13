@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -259,5 +260,68 @@ class AuthController extends Controller
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function update(Request $request)
+    {
+        $user = User::findOrFail(Auth::id());
+
+        // Validation rules
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|max:32',
+            'phone' => 'sometimes|required|string|max:25|unique:users,phone,' . $user->id,
+            'photo' => 'sometimes|file|mimes:jpeg,png,jpg,gif,webp|max:51200', // Max size 50MB
+            'password' => 'sometimes|required|string',
+        ]);
+
+        // If validation fails, return an error response
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        // Check if a photo file is being uploaded
+        if ($request->hasFile('photo')) {
+
+            $oldPath = $user->photo ? public_path("storage/" . $user->photo) : null;
+
+            // Delete old photo if it exists
+            if ($oldPath && File::exists($oldPath)) {
+                File::delete($oldPath);
+            }
+
+            // Store the new photo with the user ID as the name
+            $file = $request->file('photo');
+            $filename = $user->id . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('user', $filename, 'public');
+            $user->update(['photo' => $path]);
+        }
+
+        // Handle password hashing if password is provided
+        if ($request->filled('password')) {
+            $request->merge(['password' => bcrypt($request->password)]);
+        }
+
+        // Update user details
+        $user->update($request->except(['photo', 'password'])); // Exclude the raw password from being directly set
+
+        if ($request->has('password')) {
+            $user->password = $request->password;
+        }
+
+        $user->save();
+
+        if($user->photo){
+            $user->photo = url('storage/' . $user->photo);
+        }
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'User updated successfully',
+            'data' => $user
+        ], 200);
     }
 }

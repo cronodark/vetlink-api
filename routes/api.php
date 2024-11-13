@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/check-email', [AuthController::class, 'checkEmail'])->name('checkEmail');
 Route::post('/register', [AuthController::class, 'register'])->name('api.register');
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->name('api.login');
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.logout');
-Route::get('/profile', [AuthController::class, 'me'])->middleware('auth:sanctum')->name('api.me');
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::post('/profile/update', [AuthController::class, 'update'])->name('api.me');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+    Route::get('/profile', [AuthController::class, 'me'])->name('api.me');
 
     Route::group(['prefix' => 'customer'], function () {
         Route::middleware(['role:customer'])->group(function () {
