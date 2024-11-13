@@ -144,11 +144,18 @@ class QueueController extends Controller
 
     public function latest()
     {
-        $queue = Queue::with('veteriner')->where('id_customer', Auth::id())->latest()->first();
+        $queue = Queue::with('veteriner')->where('id_customer', Auth::id())->where('status', 'finished')->latest()->first();
+        if (!$queue) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'No queue found',
+            ], Response::HTTP_NOT_FOUND);
+        }
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Latest queue retrieved successfully',
             'data' => new VeterinerBasicResource($queue->veteriner)
+            // 'data' => new VeterinerBasicResource($queue->veteriner)
         ], Response::HTTP_OK);
     }
 }
