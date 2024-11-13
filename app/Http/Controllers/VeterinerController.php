@@ -6,6 +6,7 @@ use App\Http\Resources\VeterinerResource;
 use App\Models\Veteriner;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class VeterinerController extends Controller
 {
@@ -102,7 +103,44 @@ class VeterinerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $veteriner = Veteriner::find($id);
+
+        if (!$veteriner) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Veteriner not found',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'clinic_name' => 'sometimes|required|string|max:255',
+            'clinic_image' => 'sometimes|nullable|string',
+            'register_status' => 'sometimes|required|in:pending,approved,rejected',
+            'latitude' => 'sometimes|required|string',
+            'longitude' => 'sometimes|required|string',
+            'city' => 'sometimes|required|string',
+            'address' => 'sometimes|required|string',
+            'document' => 'sometimes|nullable|string',
+            'id_user' => 'sometimes|required|exists:users,id',
+            'open_time' => 'sometimes|nullable|date_format:H:i',
+            'close_time' => 'sometimes|nullable|date_format:H:i',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $veteriner->update($request->all());
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Veteriner updated successfully',
+            'data' => new VeterinerResource($veteriner)
+        ], 200);
     }
 
     /**
@@ -110,6 +148,20 @@ class VeterinerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $veteriner = Veteriner::find($id);
+
+        if (!$veteriner) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Veteriner not found',
+            ], 404);
+        }
+
+        $veteriner->delete();
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Veteriner deleted successfully',
+        ], 200);
     }
 }

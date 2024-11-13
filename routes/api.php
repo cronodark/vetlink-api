@@ -15,16 +15,6 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->na
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.logout');
 Route::get('/profile', [AuthController::class, 'me'])->middleware('auth:sanctum')->name('api.me');
 
-
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::get('/forums', [ForumController::class, 'index']);
-//     Route::get('/forums/{id}', [ForumController::class, 'show']);
-//     Route::post('/forums', [ForumController::class, 'store']);
-//     Route::put('/forums/{id}', [ForumController::class, 'update']);
-//     Route::delete('/forums/{id}', [ForumController::class, 'destroy']);
-//     Route::get('/user/forums', [ForumController::class, 'userForums']);
-// });
-
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::group(['prefix' => 'customer'], function () {
@@ -65,17 +55,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::middleware(['role:admin'])->group(function () {
         Route::group(['prefix' => 'admin'], function () {
-            Route::get('/veteriners', [VeterinerController::class, 'index'])->name('api.veteriners.index');
-            Route::get('/veteriner/{id}', [VeterinerController::class, 'show'])->name('api.veteriners.show');
+            Route::get('/veteriners', [VeterinerController::class, 'index'])->name('api.admin.veteriners.index');
+            Route::get('/veteriner/{id}', [VeterinerController::class, 'show'])->name('api.admin.veteriners.show');
+            Route::post('/veteriner/{id}', [VeterinerController::class, 'update'])->name('api.admin.veteriners.update');
+            Route::delete('/veteriner/{id}', [VeterinerController::class, 'destroy'])->name('api.admin.veteriners.delete');
+
+            Route::get('/forums', [ForumController::class, 'index'])->name('api.admin.forums.index');
+            Route::post('/forum/{id}', [ForumController::class, 'show'])->name('api.admin.forum.show');
+            Route::delete('/forum/{id}', [ForumController::class, 'destroy'])->name('api.admin.forum.delete');
         });
     });
-
-
-    // Route::middleware('auth:sanctum')->group(function () {
-    //     Route::get('/forums/{id}/comments', [CommentController::class, 'index']);
-    //     Route::post('/forums/{id}/comments', [CommentController::class, 'store']);
-    //     Route::get('/forums/{id}/comments/{commentid}', [CommentController::class, 'show']);
-    //     Route::put('/forums/{id}/comments/{commentid}', [CommentController::class, 'update']);
-    //     Route::delete('/forums/{id}/comments/{commentid}', [CommentController::class, 'destroy']);
-    // });
 });
