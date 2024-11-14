@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('characteristics');
             $table->enum('status', ['lost' ,'found']);
             $table->text('description');
-            $table->string('pet_image');
+            $table->string('pet_image')->nullable();
             $table->foreignId('id_user')->constrained('users');
             $table->timestamps();
         });

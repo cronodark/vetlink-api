@@ -7,6 +7,7 @@ use App\Models\ForumPost;
 use Database\Seeders\ForumPostSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -39,7 +40,9 @@ class ForumController extends Controller
             'title' => 'required|string|max:255',
             'last_seen' => 'required|string',
             'description' => 'required|string|max:255',
-            'pet_image' => 'required|string',
+            'characteristics' => 'required|string',
+            'pet_image' => 'sometimes|required|string',
+            'pet_image_file' => 'sometimes|required|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
         ]);
 
         if ($validator->fails()) {
@@ -50,13 +53,35 @@ class ForumController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        if($request->pet_image == null && !$request->hasFile('pet_image_file')) {
+            return response()->json([
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => 'Pet image is required',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // dd($request->all());
+
         $forum = ForumPost::create([
             'title' => $request->title,
             'last_seen' => $request->last_seen,
             'description' => $request->description,
-            'pet_image' => $request->pet_image,
+            'characteristics' => $request->characteristics,
+            'status' => 'lost',
             'id_user' => Auth::id(),
         ]);
+
+        if($request->pet_image != null) {
+            $forum->update(['pet_image' => $request->pet_image]);
+        }
+
+        if ($request->hasFile('pet_image_file')) {
+            // If an image file is provided, store it and get the URL
+            $file = $request->file('pet_image_file');
+            $filename = $forum->id . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('forum', $filename, 'public'); // Store the image file
+            $forum->update(['pet_image' => $filePath]); // Generate the URL for the stored image
+        }
 
         return response()->json([
             'status' => Response::HTTP_CREATED,

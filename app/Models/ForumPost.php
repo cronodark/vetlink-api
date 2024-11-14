@@ -13,8 +13,10 @@ class ForumPost extends Model
         'title',
         'last_seen',
         'description',
+        'characteristics',
         'pet_image',
         'id_user',
+        'status'
     ];
 
 
