@@ -134,7 +134,7 @@ class ForumController extends Controller
             $forum = ForumPost::findOrFail($id);
 
             // Check if the authenticated user is the owner of the forum post
-            if ($forum->id_user !== Auth::id()) {
+            if ($forum->id_user !== Auth::id() && Auth::user()->role !== 'admin') {
                 return response()->json([
                     'status' => Response::HTTP_FORBIDDEN,
                     'message' => 'Not authorized',
