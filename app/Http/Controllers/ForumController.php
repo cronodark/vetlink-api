@@ -92,39 +92,30 @@ class ForumController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    public function update(Request $request, $id)
+    public function update($id)
     {
-        $forum = ForumPost::findOrFail($id);
+        try {
+            $forum = ForumPost::findOrFail($id);
 
-        if ($forum->id_user !== Auth::id()) {
+            if ($forum->id_user !== Auth::id()) {
+                return response()->json([
+                    'status' => Response::HTTP_FORBIDDEN,
+                    'message' => 'Not authorized',
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            $forum->update(["status" => "found"]);
+
             return response()->json([
-                'status' => Response::HTTP_FORBIDDEN,
-                'message' => 'Not authorized',
-            ], Response::HTTP_FORBIDDEN);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'last_seen' => 'required|string',
-            'description' => 'required|string|max:255',
-            'pet_image' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
+                'status' => Response::HTTP_OK,
+                'message' => 'Forum updated success',
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException) {
             return response()->json([
-                'status' => Response::HTTP_BAD_REQUEST,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], Response::HTTP_BAD_REQUEST);
+                'status' => Response::HTTP_NOT_FOUND,
+                'error' => 'Forum not found'
+            ], 404);
         }
-
-        $forum->update($request->all());
-
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'message' => 'Forum updated success',
-            'data' => $forum
-        ], Response::HTTP_OK);
     }
 
     public function destroy($id)
@@ -166,8 +157,6 @@ class ForumController extends Controller
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => "Forum not found",
             ], Response::HTTP_NOT_FOUND);
-
-
         }
     }
 
