@@ -78,7 +78,7 @@ class VeterinerController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Success',
-            'data' => $veteriner
+            'data' => new VeterinerResource($veteriner)
         ], 200);
     }
 
@@ -96,7 +96,7 @@ class VeterinerController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Success',
-            'data' => $veteriner
+            'data' => new VeterinerResource($veteriner)
         ], 200);
     }
 
