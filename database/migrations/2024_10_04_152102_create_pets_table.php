@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('notes')->nullable();
             $table->foreignId('type')->constrained('pet_types');
             $table->foreignId('breed')->constrained('pet_breeds');
-            $table->foreignId('id_user')->constrained('users');
+            $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\ForumComment;
 use App\Models\ForumPost;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\CommentResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class CommentController extends Controller  
+class CommentController extends Controller
 {
     public function index($forumId)
     {
@@ -20,14 +23,21 @@ class CommentController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Success',
-            'data' => $comments
+            'data' => CommentResource::collection($comments)
         ], Response::HTTP_OK);
     }
 
     public function store(Request $request, $forumId)
     {
-      
-        $forum = ForumPost::findOrFail($forumId);
+
+        try {
+            $forum = ForumPost::findOrFail($forumId);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Forum post not found'
+            ], 404);
+        }
 
         $validator = Validator::make($request->all(), [
             'content' => 'required|string'
@@ -41,19 +51,15 @@ class CommentController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $comment = new ForumComment();
-        $comment->content = $request->input('content'); // Menggunakan input()
-        $comment->forum_post_id = $forumId;
-        $comment->user_id = Auth::id();
-        $comment->save();
-
-        // Load the user relationship
-        $comment->load('user');
+        $comment = ForumComment::create([
+            'content' => $request->input('content'),
+            'forum_post_id' => $forumId,
+            'user_id' => Auth::id()
+        ]);
 
         return response()->json([
             'status' => Response::HTTP_CREATED,
             'message' => 'Comment created successfully',
-            'data' => $comment
         ], Response::HTTP_CREATED);
     }
 
@@ -75,7 +81,7 @@ class CommentController extends Controller
         $comment = ForumComment::where('forum_post_id', $forumId)
             ->findOrFail($commentId);
 
-        
+
         if ($comment->user_id !== Auth::id()) {
             return response()->json([
                 'status' => Response::HTTP_FORBIDDEN,
@@ -95,10 +101,10 @@ class CommentController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $comment->content = $request->input('content'); 
+        $comment->content = $request->input('content');
         $comment->save();
 
-       
+
         $comment->load('user');
 
         return response()->json([
@@ -113,7 +119,7 @@ class CommentController extends Controller
         $comment = ForumComment::where('forum_post_id', $forumId)
             ->findOrFail($commentId);
 
-       
+
         if ($comment->user_id !== Auth::id()) {
             return response()->json([
                 'status' => Response::HTTP_FORBIDDEN,

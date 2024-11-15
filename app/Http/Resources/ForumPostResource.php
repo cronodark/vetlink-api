@@ -27,7 +27,7 @@ class ForumPostResource extends JsonResource
                 'username' => $this->user->username,
                 'photo' => $this->user->photo,
             ],
-            'comments' => ForumCommentResource::collection($this->comments)
+            // 'comments' => ForumCommentResource::collection($this->comments)
         ];
     }
 

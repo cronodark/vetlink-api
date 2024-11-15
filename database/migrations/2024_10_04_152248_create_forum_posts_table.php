@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('status', ['lost' ,'found']);
             $table->text('description');
             $table->string('pet_image')->nullable();
-            $table->foreignId('id_user')->constrained('users');
+            $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->dateTime('appointment_time');
             $table->string('status');
-            $table->foreignId('id_pet')->constrained('pets');
-            $table->foreignId('id_customer')->constrained('users');
-            $table->foreignId('id_veteriner')->constrained('users');
+            $table->foreignId('id_pet')->constrained('pets')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('id_customer')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('id_veteriner')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
