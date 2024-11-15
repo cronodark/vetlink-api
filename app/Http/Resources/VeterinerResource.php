@@ -49,6 +49,6 @@ class VeterinerResource extends JsonResource
 
     public function url($path)
     {
-        return url('/storage/' . $this->documenturl);
+        return url('/storage/' . $this->document);
     }
 }
