@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ForumPostResource;
 use App\Models\ForumPost;
 use Database\Seeders\ForumPostSeeder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
@@ -53,7 +55,7 @@ class ForumController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        if($request->pet_image == null && !$request->hasFile('pet_image_file')) {
+        if ($request->pet_image == null && !$request->hasFile('pet_image_file')) {
             return response()->json([
                 'status' => Response::HTTP_BAD_REQUEST,
                 'message' => 'Pet image is required',
@@ -71,7 +73,7 @@ class ForumController extends Controller
             'id_user' => Auth::id(),
         ]);
 
-        if($request->pet_image != null) {
+        if ($request->pet_image != null) {
             $forum->update(['pet_image' => $request->pet_image]);
         }
 
@@ -127,21 +129,46 @@ class ForumController extends Controller
 
     public function destroy($id)
     {
-        $forum = ForumPost::findOrFail($id);
+        try {
+            // Find the forum post by ID
+            $forum = ForumPost::findOrFail($id);
 
-        if ($forum->id_user !== Auth::id()) {
+            // Check if the authenticated user is the owner of the forum post
+            if ($forum->id_user !== Auth::id()) {
+                return response()->json([
+                    'status' => Response::HTTP_FORBIDDEN,
+                    'message' => 'Not authorized',
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            // Check if the forum post has an associated image and delete it
+            if ($forum->pet_image) {
+                // Check if the image is a URL or a local path
+                // Assuming the image is stored in the 'storage/app/public/forum' directory
+                $imagePath = public_path('storage/' . $forum->pet_image);
+
+                // Delete the file if it exists
+                // Check if the file exists and is not the default image
+                if (File::exists($imagePath)) {
+                    File::delete($imagePath);
+                }
+            }
+
+            // Delete the forum post itself
+            $forum->delete();
             return response()->json([
-                'status' => Response::HTTP_FORBIDDEN,
-                'message' => 'Not authorized',
-            ], Response::HTTP_FORBIDDEN);
+                'status' => Response::HTTP_OK,
+                'message' => 'Forum deleted successfully',
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            // If pet not found, return a 404 error
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => "Forum not found",
+            ], Response::HTTP_NOT_FOUND);
+
+
         }
-
-        $forum->delete();
-
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'message' => 'Forum deleted success'
-        ], Response::HTTP_OK);
     }
 
     public function userForums()
