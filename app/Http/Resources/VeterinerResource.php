@@ -22,6 +22,7 @@ class VeterinerResource extends JsonResource
             'register_status' => $this->register_status,
             'clinic_name' => $this->clinic_name,
             'clinic_image' => $this->getFullVetImageUrl($this->clinic_image),
+            'document' => $this->url($this->documenturl),
             'city' => $this->city,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
@@ -44,5 +45,10 @@ class VeterinerResource extends JsonResource
 
         // Otherwise, assume it is a path in the storage and generate the full URL
         return url('/storage/' . $this->clinic_image);
+    }
+
+    public function url($path)
+    {
+        return url('/storage/' . $this->documenturl);
     }
 }
