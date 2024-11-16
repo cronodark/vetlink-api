@@ -18,6 +18,7 @@ class CommentController extends Controller
     {
         $comments = ForumComment::with('user')
             ->where('forum_post_id', $forumId)
+            ->orderBy('id', 'desc')
             ->get();
 
         return response()->json([
@@ -29,7 +30,6 @@ class CommentController extends Controller
 
     public function store(Request $request, $forumId)
     {
-
         try {
             $forum = ForumPost::findOrFail($forumId);
         } catch (ModelNotFoundException $e) {
