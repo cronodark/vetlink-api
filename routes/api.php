@@ -67,7 +67,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/veteriner/{id}', [VeterinerController::class, 'destroy'])->name('api.admin.veteriners.delete');
 
             Route::get('/forums', [ForumController::class, 'index'])->name('api.admin.forums.index');
-            Route::post('/forum/{id}', [ForumController::class, 'show'])->name('api.admin.forum.show');
+            Route::get('/forum/{id}', [ForumController::class, 'show'])->name('api.admin.forum.show');
             Route::delete('/forum/{id}', [ForumController::class, 'destroy'])->name('api.admin.forum.delete');
         });
     });
