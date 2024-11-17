@@ -99,52 +99,90 @@ class ForumController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    public function update($id, Request $request)
-{
-    try {
-        $forum = ForumPost::findOrFail($id);
+    public function updateStatus($id)
+    {
+        try {
+            $forum = ForumPost::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
-            'title' => 'sometimes|required|string|max:48',
-            'last_seen' => 'sometimes|required|string',
-            'characteristics' => 'sometimes|required|string',
-            'description' => 'sometimes|required|string',
-            'pet_image' => 'sometimes|required|string',
-            'pet_image_file' => 'sometimes|required|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => Response::HTTP_BAD_REQUEST,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        if ($forum->id_user !== Auth::id()) {
-            return response()->json([
-                'status' => Response::HTTP_FORBIDDEN,
-                'message' => 'Not authorized',
-            ], Response::HTTP_FORBIDDEN);
-        }
-
-        if ($validator->validated()) {
-            $forum->update($validator->validated());
-        } else {
             $forum->update(['status' => 'found']);
-        }
 
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'message' => 'Forum updated successfully',
-        ], Response::HTTP_OK);
-    } catch (ModelNotFoundException $e) {
-        return response()->json([
-            'status' => Response::HTTP_NOT_FOUND,
-            'error' => 'Forum not found'
-        ], Response::HTTP_NOT_FOUND);
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Forum status updated successfully',
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'error' => 'Forum not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
     }
-}
+
+    public function update($id, Request $request)
+    {
+        try {
+            $forum = ForumPost::findOrFail($id);
+
+            $validator = Validator::make($request->all(), [
+                'title' => 'sometimes|required|string|max:48',
+                'last_seen' => 'sometimes|required|string',
+                'characteristics' => 'sometimes|required|string',
+                'description' => 'sometimes|required|string',
+                'pet_image_file' => 'sometimes|required|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            if ($forum->id_user !== Auth::id()) {
+                return response()->json([
+                    'status' => Response::HTTP_FORBIDDEN,
+                    'message' => 'Not authorized',
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            if ($validator->validated()) {
+                $forum->update($validator->validated());
+            }
+
+            $oldFilePath = $forum->pet_image ? public_path("storage/" . $forum->pet_image) : null;
+
+            // If an image file is provided, store it and get the URL
+            if ($request->hasFile('pet_image_file')) {
+                $image = $request->file('pet_image_file');
+                if ($oldFilePath && File::exists($oldFilePath)) {
+                    File::delete($oldFilePath);
+                }
+
+                // Store the new file
+                $file = $request->file('pet_image_file');
+                $fileName = $forum->id . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('forum', $fileName, 'public'); // Store in 'public/forum' directory
+
+                if ($path) {
+                    // Update the forum's photo field with the new path
+                    $forum->update([
+                        'pet_image' => $path,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Forum updated successfully',
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'error' => 'Forum not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+    }
 
     public function destroy($id)
     {

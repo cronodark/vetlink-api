@@ -43,6 +43,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/forum', [ForumController::class, 'store'])->name('api.customer.forum.store');
             Route::get('/forums', [ForumController::class, 'index'])->name('api.customer.forum.index');
             Route::get('/forum/{id}', [ForumController::class, 'show'])->name('api.customer.forum.show');
+            Route::post('/forum/status/{id}', [ForumController::class, 'updateStatus'])->name('api.customer.forum.update');
             Route::post('/forum/{id}', [ForumController::class, 'update'])->name('api.customer.forum.update');
             Route::delete('/forum/{id}', [ForumController::class, 'destroy'])->name('api.customer.forum.delete');
 
