@@ -21,6 +21,8 @@ class QueueResource extends JsonResource
             'pet' => $this->pet ? [
                 'id' => $this->pet->id,
                 'name' => $this->pet->pet_name,
+                'type' => $this->pet->type,
+                'photo' => url('/storage/' . $this->pet->photo)
             ] : null,
             'veteriner' => $this->veteriner ? [
                 'id' => $this->veteriner->id,
@@ -30,6 +32,8 @@ class QueueResource extends JsonResource
             'customer' => $this->customer ? [
                 'id' => $this->customer->id,
                 'name' => $this->customer->name,
+                'email' => $this->customer->email,
+                'phone' => $this->customer->phone,
             ] : null,
         ];
     }

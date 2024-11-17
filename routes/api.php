@@ -42,6 +42,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             //forum
             Route::post('/forum', [ForumController::class, 'store'])->name('api.customer.forum.store');
             Route::get('/forums', [ForumController::class, 'index'])->name('api.customer.forum.index');
+            Route::get('/forum/{id}', [ForumController::class, 'show'])->name('api.customer.forum.show');
             Route::post('/forum/{id}', [ForumController::class, 'update'])->name('api.customer.forum.update');
             Route::delete('/forum/{id}', [ForumController::class, 'destroy'])->name('api.customer.forum.delete');
 
@@ -53,9 +54,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::middleware(['role:veteriner'])->group(function () {
         Route::group(['prefix' => 'veteriner'], function () {
-            Route::get('/veteriner/queues', [QueueController::class, 'indexVeteriner'])->name('api.veteriner.show.queues');
-            Route::get('/veteriner/queue/{id}', [QueueController::class, 'showVeteriner'])->name('api.veteriner.show.queue');
-            Route::delete('/veteriner/queue/{id}', [QueueController::class, 'destroy'])->name('api.veteriner.delete.queue');
+            Route::get('/queues', [QueueController::class, 'indexVeteriner'])->name('api.veteriner.show.queues');
+            Route::get('/queue/{id}', [QueueController::class, 'showVeteriner'])->name('api.veteriner.show.queue');
+            Route::delete('/queue/{id}', [QueueController::class, 'destroy'])->name('api.veteriner.delete.queue');
         });
     });
 

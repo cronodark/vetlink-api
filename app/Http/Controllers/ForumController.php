@@ -28,12 +28,19 @@ class ForumController extends Controller
 
     public function show($id)
     {
-        $forum = ForumPost::with('user')->findOrFail($id);
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'message' => 'Success',
-            'data' => $forum
-        ], Response::HTTP_OK);
+        try {
+            $forum = ForumPost::with('user', 'comments.user')->findOrFail($id);
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success',
+                'data' => new ForumPostResource($forum)
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'error' => 'Forum not found'
+            ], 404);
+        }
     }
 
     public function store(Request $request)
@@ -92,31 +99,52 @@ class ForumController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    public function update($id)
-    {
-        try {
-            $forum = ForumPost::findOrFail($id);
+    public function update($id, Request $request)
+{
+    try {
+        $forum = ForumPost::findOrFail($id);
 
-            if ($forum->id_user !== Auth::id()) {
-                return response()->json([
-                    'status' => Response::HTTP_FORBIDDEN,
-                    'message' => 'Not authorized',
-                ], Response::HTTP_FORBIDDEN);
-            }
+        $validator = Validator::make($request->all(), [
+            'title' => 'sometimes|required|string|max:48',
+            'last_seen' => 'sometimes|required|string',
+            'characteristics' => 'sometimes|required|string',
+            'description' => 'sometimes|required|string',
+            'pet_image' => 'sometimes|required|string',
+            'pet_image_file' => 'sometimes|required|file|mimes:jpeg,png,jpg,gif,webp|max:51200',
+        ]);
 
-            $forum->update(["status" => "found"]);
-
+        if ($validator->fails()) {
             return response()->json([
-                'status' => Response::HTTP_OK,
-                'message' => 'Forum updated success',
-            ], Response::HTTP_OK);
-        } catch (ModelNotFoundException) {
-            return response()->json([
-                'status' => Response::HTTP_NOT_FOUND,
-                'error' => 'Forum not found'
-            ], 404);
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], Response::HTTP_BAD_REQUEST);
         }
+
+        if ($forum->id_user !== Auth::id()) {
+            return response()->json([
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => 'Not authorized',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        if ($validator->validated()) {
+            $forum->update($validator->validated());
+        } else {
+            $forum->update(['status' => 'found']);
+        }
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Forum updated successfully',
+        ], Response::HTTP_OK);
+    } catch (ModelNotFoundException $e) {
+        return response()->json([
+            'status' => Response::HTTP_NOT_FOUND,
+            'error' => 'Forum not found'
+        ], Response::HTTP_NOT_FOUND);
     }
+}
 
     public function destroy($id)
     {
