@@ -35,7 +35,8 @@ class QueueController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
 
-        $queues = Queue::with(['pet', 'customer'])->where('id_veteriner', $veteriner->id)->get();
+        $queues = Queue::with(['pet.petType', 'customer'])->where('id_veteriner', $veteriner->id)->get();
+
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Queues retrieved successfully',

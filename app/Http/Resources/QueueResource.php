@@ -21,7 +21,7 @@ class QueueResource extends JsonResource
             'pet' => $this->pet ? [
                 'id' => $this->pet->id,
                 'name' => $this->pet->pet_name,
-                'type' => $this->pet->type,
+                'type' => $this->pet->petType->name,
                 'photo' => url('/storage/' . $this->pet->photo)
             ] : null,
             'veteriner' => $this->veteriner ? [

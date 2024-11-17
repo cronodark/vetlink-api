@@ -65,7 +65,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::group(['prefix' => 'admin'], function () {
             Route::get('/veteriners', [VeterinerController::class, 'index'])->name('api.admin.veteriners.index');
             Route::get('/veteriner/{id}', [VeterinerController::class, 'show'])->name('api.admin.veteriners.show');
-            Route::post('/veteriner/{id}', [VeterinerController::class, 'update'])->name('api.admin.veteriners.update');
+            Route::post('/veteriner/{id}', [VeterinerController::class, 'adminUpdate'])->name('api.admin.veteriners.update');
             Route::delete('/veteriner/{id}', [VeterinerController::class, 'destroy'])->name('api.admin.veteriners.delete');
 
             Route::get('/forums', [ForumController::class, 'index'])->name('api.admin.forums.index');

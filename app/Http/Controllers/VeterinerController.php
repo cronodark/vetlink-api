@@ -103,6 +103,46 @@ class VeterinerController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    public function adminUpdate(Request $request, string $id)
+    {
+        $veteriner = Veteriner::find($id);
+
+        if (!$veteriner) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Veteriner not found',
+            ], 404);
+        }
+
+        // Basic validation for register_status
+        $validator = Validator::make($request->all(), [
+            'register_status' => 'required|in:pending,approved,rejected',
+        ]);
+
+        // If the register_status is 'rejected', make register_message mandatory
+        if ($request->register_status === 'rejected') {
+            $validator->sometimes('register_message', 'required|string', function ($input) {
+                return $input->register_status === 'rejected';
+            });
+        }
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $veteriner->update($request->all());
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Veteriner updated successfully',
+            'data' => new VeterinerResource($veteriner)
+        ], 200);
+    }
+
     public function update(Request $request, string $id)
     {
         $veteriner = Veteriner::find($id);
