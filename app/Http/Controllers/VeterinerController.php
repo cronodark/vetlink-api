@@ -137,14 +137,6 @@ class VeterinerController extends Controller
             'register_status' => 'required|in:pending,approved,rejected',
             'register_status_message' => 'required_if:register_status,rejected|string'
         ]);
-
-        // // If the register_status is 'rejected', make register_message mandatory
-        // if ($request->register_status === 'rejected') {
-        //     $validator->sometimes('register_status_message', 'required|string', function ($input) {
-        //         return $input->register_status === 'rejected';
-        //     });
-        // }
-
         if ($validator->fails()) {
             return response()->json([
                 'status' => Response::HTTP_BAD_REQUEST,
@@ -177,7 +169,6 @@ class VeterinerController extends Controller
         $validator = Validator::make($request->all(), [
             'clinic_name' => 'sometimes|required|string|max:255',
             'clinic_image' => 'sometimes|nullable|string',
-            'register_status' => 'sometimes|required|in:pending,approved,rejected',
             'latitude' => 'sometimes|required|string',
             'longitude' => 'sometimes|required|string',
             'city' => 'sometimes|required|string',
@@ -223,8 +214,6 @@ class VeterinerController extends Controller
         if ($updateFiles) {
             $veteriner->save();
         }
-
-
 
         return response()->json([
             'status' => Response::HTTP_OK,
