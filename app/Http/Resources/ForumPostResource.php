@@ -25,7 +25,7 @@ class ForumPostResource extends JsonResource
             'user' => [
                 'id' => $this->user->id,
                 'username' => $this->user->username,
-                'photo' => $this->user->photo,
+                'photo' => $this->user->photo != null ? $this->getFullUserImageUrl($this->user->photo) : null,
             ],
             // 'comments' => ForumCommentResource::collection($this->comments)
         ];
@@ -36,6 +36,17 @@ class ForumPostResource extends JsonResource
         // Check if the pet image is already a full URL
         if (filter_var($petImage, FILTER_VALIDATE_URL)) {
             return $petImage;
+        }
+
+        // Otherwise, assume it is a path in the storage and generate the full URL
+        return url('/storage/' . $this->pet_image);
+    }
+
+    private function getFullUserImageUrl(string $userImage): string
+    {
+        // Check if the pet image is already a full URL
+        if (filter_var($userImage, FILTER_VALIDATE_URL)) {
+            return $userImage;
         }
 
         // Otherwise, assume it is a path in the storage and generate the full URL
