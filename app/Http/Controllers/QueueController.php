@@ -7,6 +7,7 @@ use App\Http\Resources\VeterinerBasicResource;
 use App\Http\Resources\VeterinerQueueResource;
 use App\Models\Queue;
 use App\Models\Veteriner;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -114,6 +115,38 @@ class QueueController extends Controller
             'message' => 'Queue created successfully',
             'data' => $queue
         ], Response::HTTP_CREATED);
+    }
+
+    public function update($id, Request $request)
+    {
+        try {
+            $veteriner = Veteriner::where('id_user', Auth::id())->first();
+            $queue = Queue::findOrFail($id);
+            if ($queue->id_veteriner !== $veteriner->id) {
+                return response()->json([
+                    'status' => Response::HTTP_FORBIDDEN,
+                    'message' => 'You are not authorized to update this queue',
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            $request->validate([
+                'status' => 'required|in:canceled,finished'
+            ]);
+
+            $queue->update($request->all());
+
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Queue updated successfully',
+                'data' => $queue
+            ], Response::HTTP_OK);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Queue not found',
+            ], Response::HTTP_NOT_FOUND);
+        }
     }
 
     public function destroy($id)

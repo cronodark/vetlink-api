@@ -57,7 +57,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::group(['prefix' => 'veteriner'], function () {
             Route::get('/queues', [QueueController::class, 'indexVeteriner'])->name('api.veteriner.show.queues');
             Route::get('/queue/{id}', [QueueController::class, 'showVeteriner'])->name('api.veteriner.show.queue');
+            Route::post('/queue/{id}', [QueueController::class, 'update'])->name('api.veteriner.update.queue');
             Route::delete('/queue/{id}', [QueueController::class, 'destroy'])->name('api.veteriner.delete.queue');
+
+            Route::get('/detail', [VeterinerController::class, 'vetShow'])->name('api.veteriner.show');
+            Route::post('/update', [VeterinerController::class, 'update'])->name('api.veteriner.update');
         });
     });
 

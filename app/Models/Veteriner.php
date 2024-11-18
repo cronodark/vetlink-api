@@ -21,6 +21,7 @@ class Veteriner extends Model
         'city',
         'open_time',
         'close_time',
+        'register_status_message'
     ];
 
     public function user()
