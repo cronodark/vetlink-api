@@ -15,9 +15,9 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest')->na
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::post('/profile/update', [AuthController::class, 'update'])->name('api.me');
+    Route::post('/profile/update', [AuthController::class, 'update'])->name('api.update.profile');
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
-    Route::get('/profile', [AuthController::class, 'me'])->name('api.me');
+    Route::get('/profile', [AuthController::class, 'show'])->name('api.show.profile');
 
     Route::group(['prefix' => 'customer'], function () {
         Route::middleware(['role:customer'])->group(function () {

@@ -63,7 +63,7 @@ class AuthController extends Controller
         }
     }
 
-    public function me()
+    public function show()
     {
 
         $user = Auth::user();
