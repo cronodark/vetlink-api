@@ -188,6 +188,7 @@ class AuthController extends Controller
                 $veterinerData = [
                     'clinic_name' => $request->clinic_name,
                     'register_status' => 'pending',
+                    'register_status_message' => 'Please wait for the admin to verify your clinic',
                     'latitude' => $request->latitude,
                     'longitude' => $request->longitude,
                     'city' => $request->city,
