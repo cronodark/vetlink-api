@@ -112,6 +112,36 @@ class AuthController extends Controller
         }
     }
 
+    public function checkUsername(Request $request){
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $usernameExists = User::where('username', $request->username)->exists();
+
+        if ($usernameExists) {
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Username already exists',
+                'isExists' => true
+            ]);
+        } else {
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Username does not exist, you can proceed with registration',
+                'isExists' => false
+            ]);
+        }
+    }
+
     public function register(Request $request)
     {
         $validator = null;
