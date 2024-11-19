@@ -50,6 +50,6 @@ class ForumPostResource extends JsonResource
         }
 
         // Otherwise, assume it is a path in the storage and generate the full URL
-        return url('/storage/' . $this->pet_image);
+        return url('/storage/' . $this->user->photo);
     }
 }
