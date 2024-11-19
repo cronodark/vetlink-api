@@ -126,7 +126,10 @@ class PetController extends Controller
         // If a new file is uploaded, delete the old file first
         if ($request->hasFile('photo')) {
             // Delete old photo if it exists
-            if ($oldFilePath && File::exists($oldFilePath) && $pet->photo !== 'pet/default.jpeg') {
+            if($pet->photo !== 'pet/default.jpeg'){
+                //
+            }
+            else if ($oldFilePath && File::exists($oldFilePath)) {
                 File::delete($oldFilePath);
             }
 
