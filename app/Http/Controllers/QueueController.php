@@ -130,7 +130,7 @@ class QueueController extends Controller
             }
 
             $request->validate([
-                'status' => 'required|in:canceled,finished'
+                'status' => 'required|in:canceled,finished,ongoing'
             ]);
 
             $queue->update($request->all());
