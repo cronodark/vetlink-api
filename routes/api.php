@@ -63,6 +63,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::get('/detail', [VeterinerController::class, 'vetShow'])->name('api.veteriner.show');
             Route::post('/update', [VeterinerController::class, 'update'])->name('api.veteriner.update');
+
+            Route::get('/forums', [ForumController::class, 'index'])->name('api.veteriner.forums.index');
+            Route::get('/forum/{id}', [ForumController::class, 'show'])->name('api.veteriner.forum.show');
         });
     });
 
