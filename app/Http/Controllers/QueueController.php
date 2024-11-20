@@ -104,7 +104,7 @@ class QueueController extends Controller
 
         $queue = Queue::create([
             'appointment_time' => $request->appointment_time,
-            'status' => 'ongoing',
+            'status' => 'pending',
             'id_customer' => Auth::id(),
             'id_veteriner' => $request->id_veteriner,
             'id_pet' => $request->id_pet
@@ -130,7 +130,7 @@ class QueueController extends Controller
             }
 
             $request->validate([
-                'status' => 'required|in:canceled,finished,ongoing'
+                'status' => 'required|in:canceled,finished,ongoing,pending'
             ]);
 
             $queue->update($request->all());
